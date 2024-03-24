@@ -27,9 +27,9 @@ class TkWindow(tk.Tk): # inherits from tk.Tk
         self.mainloop()
 
     def open_port(self, port_name, port_index):
-        # create tab
-        tab = src.midi_port.PortTab(self.main, self.midi, port_name, port_index)
-        self.main.add(tab, text=port_name)
+        tab = src.midi_port.PortTab(self.main, port_name, port_index)
+        split_name = port_name.split(':')[1]
+        self.main.add(tab, text=split_name)
 
 
 # Entry point
