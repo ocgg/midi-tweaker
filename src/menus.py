@@ -19,8 +19,8 @@ class MenuBar(tk.Menu):
         # Menu MIDI ports
         ports_menu = tk.Menu(self, tearoff=0)
         for i, port in enumerate(self.master.midi_ports):
-            ports_menu.add_checkbutton(
-                label=f"{i} - {port}",
-                command=lambda: self.master.open_port(port, i)
+            ports_menu.add_command(
+                label = f"{i} - {port}",
+                command = lambda i=i, port=port: self.master.open_port(port, i)
             )
         self.add_cascade(label="Open MIDI Ports", menu=ports_menu)
