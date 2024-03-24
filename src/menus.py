@@ -1,30 +1,26 @@
 import tkinter as tk
 
 
-class MenuBar:
+class MenuBar(tk.Menu):
     def __init__(self, master):
+        super().__init__(master)
         self.master = master
-        self.menu_bar = tk.Menu(self.master)
-        self.master.config(menu=self.menu_bar)
 
         # Menu File
-        file_menu = tk.Menu(self.menu_bar, tearoff=0)
+        file_menu = tk.Menu(self, tearoff=0)
         file_menu.add_command(label="Open")
         file_menu.add_command(label="Save")
         file_menu.add_command(label="Save as...")
         file_menu.add_command(label="Reset")
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.master.quit)
-        self.menu_bar.add_cascade(label="File", menu=file_menu)
+        self.add_cascade(label="File", menu=file_menu)
 
         # Menu MIDI ports
-        ports_menu = tk.Menu(self.menu_bar, tearoff=0)
+        ports_menu = tk.Menu(self, tearoff=0)
         for i, port in enumerate(self.master.midi_ports):
             ports_menu.add_checkbutton(
                 label=f"{i} - {port}",
-                command=lambda: self.select_port(i)
+                command=lambda: self.master.open_port(port, i)
             )
-        self.menu_bar.add_cascade(label="MIDI Ports", menu=ports_menu)
-
-    def select_port(self, port):
-        print(f"Port selected: {port}")
+        self.add_cascade(label="Open MIDI Ports", menu=ports_menu)
