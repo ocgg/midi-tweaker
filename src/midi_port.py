@@ -10,6 +10,10 @@ class PortTab(ttk.Frame):
         # MIDI IN bar
         self.midi_in_bar = tk.Frame(self, height=50, bg='lightblue')
         self.midi_in_bar.pack(fill='x')
+        self.midi_in_msg = ttk.Label(self.midi_in_bar, text="MIDI IN")
+        self.midi_in_msg.pack(fill='both', expand=1)
+
+        self.midi_in.set_callback(self.midi_in_callback)
 
         # Main frame
         self.main = tk.Frame(self)
@@ -19,5 +23,5 @@ class PortTab(ttk.Frame):
         self.midi_out_bar = tk.Frame(self, height=50, bg='lightblue')
         self.midi_out_bar.pack(fill='x')
 
-        # label = tk.Label(self.main, text=midi)
-        # label.pack(fill='both', expand=1)
+    def midi_in_callback(self, msg, data=None):
+        self.midi_in_msg.configure(text=msg)
