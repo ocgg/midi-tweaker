@@ -1,5 +1,6 @@
 # TODO (port-tabs):
 
-- vérifier que ça marche pour plusieurs ports/tabs
 - choisir port de sortie
-- refacto args de __init__
+- refacto
+
+- ATTENTION: actuellement le choix d'un port MIDI peut avoir un comportement non voulu si on branche/débranche du matériel MIDI alors que le programme est déjà lancé
