@@ -5,7 +5,7 @@ import src.menus
 import src.midi_port
 
 
-class TkWindow(tk.Tk): # inherits from tk.Tk
+class ApplicationWindow(tk.Tk): # inherits from tk.Tk
     def __init__(self):
         # Call parent class constructor to have its behavior & state under self
         tk.Tk.__init__(self)
@@ -34,4 +34,4 @@ class TkWindow(tk.Tk): # inherits from tk.Tk
 
 # Entry point
 if __name__ == "__main__":
-    window = TkWindow()
+    window = ApplicationWindow()
