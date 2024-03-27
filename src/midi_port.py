@@ -1,4 +1,5 @@
 import rtmidi
+import rtmidi.midiconstants as consts
 import tkinter as tk
 import tkinter.ttk as ttk
 
@@ -21,17 +22,17 @@ class PortTab(ttk.Frame):
         self.packer()
 
     def midi_in_callback(self, msg, data=None):
-        prefix = "MIDI IN: "
+        prefix = "MIDI IN:\n"
         msg_data = msg[0]
         channel = msg_data[0] & 0xF     # lower 4 bits
         msg_type = msg_data[0] & 0xF0   # upper 4 bits
 
-        if msg_type == 0x90:  # Note on
-            txt = f"CH: {channel}   | NOTEON  {msg_data[1]}     | VEL: {msg_data[2]}"
-        elif msg_type == 0x80:    # Note off
-            txt = f"CH: {channel}   | NOTEOFF {msg_data[1]}     | VEL: {msg_data[2]}"
-        elif msg_type == 0xB0:  # CC
-            txt = f"CH: {channel}   | CC    {msg_data[1]}       | VAL: {msg_data[2]}"
+        if msg_type == consts.NOTE_ON:  # Note on
+            txt = f"NOTEON | CH: {channel} | NOTE: {msg_data[1]} | VEL: {msg_data[2]}"
+        elif msg_type == consts.NOTE_OFF:    # Note off
+            txt = f"NOTEOFF | CH: {channel} | NOTE: {msg_data[1]} | VEL: {msg_data[2]}"
+        elif msg_type == consts.CONTROL_CHANGE:  # CC
+            txt = f"CONTROL CHANGE | CH: {channel} | CONTROLLER: {msg_data[1]} | VAL: {msg_data[2]}"
             # TODO: handle pitch bend & other General Midi specific messages
             # AI-generated:
             # # Vérification si le message est le début d'un message de Pitch Bend
@@ -51,7 +52,7 @@ class PortTab(ttk.Frame):
     def create_midi_bar(self, source):
         midi_label = ttk.Label(
             self,
-            text=f"MIDI {source}: waiting for messages...",
+            text=f"MIDI {source}:\nWaiting for messages...",
             anchor='w',
             width=50
         )
