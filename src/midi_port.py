@@ -32,6 +32,20 @@ class PortTab(ttk.Frame):
             txt = f"CH: {channel}   | NOTEOFF {msg_data[1]}     | VEL: {msg_data[2]}"
         elif msg_type == 0xB0:  # CC
             txt = f"CH: {channel}   | CC    {msg_data[1]}       | VAL: {msg_data[2]}"
+            # TODO: handle pitch bend & other General Midi specific messages
+            # AI-generated:
+            # # Vérification si le message est le début d'un message de Pitch Bend
+            # if controller == 0 or controller == 32:
+            #     # Ici, vous devez stocker la valeur du premier message CC
+            #     # et attendre le deuxième message CC pour calculer la valeur de Pitch Bend
+            #     # Ceci est une simplification et nécessite une logique supplémentaire pour gérer correctement les messages de Pitch Bend
+            #     print(f"{prefix} Pitch Bend Start: CH: {channel}, Controller: {controller}, Value: {value}")
+            # elif controller == 64 or controller == 96:
+            #     # Ici, vous devez combiner la valeur du premier message CC avec celle-ci pour obtenir la valeur de Pitch Bend
+            #     # Ceci est une simplification et nécessite une logique supplémentaire pour gérer correctement les messages de Pitch Bend
+            #     print(f"{prefix} Pitch Bend Value: CH: {channel}, Controller: {controller}, Value: {value}")
+        else:
+            txt = f"Not covered yet: {msg}"
         self.midi_in_label.configure(text=prefix + txt)
 
     def create_midi_bar(self, source):
