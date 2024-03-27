@@ -3,6 +3,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import src.menus
 import src.midi_port
+import src.rule_repo as repo
 
 class ApplicationWindow(tk.Tk): # inherits from tk.Tk
     def __init__(self):

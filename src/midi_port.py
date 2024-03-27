@@ -2,6 +2,7 @@ import rtmidi
 import rtmidi.midiconstants as consts
 import tkinter as tk
 import tkinter.ttk as ttk
+import src.rule
 
 class PortTab(ttk.Frame):
     def __init__(self, master, port_name, port_index):
@@ -15,11 +16,42 @@ class PortTab(ttk.Frame):
         self.midi_in_label = self.create_midi_bar('IN')
         # Main frame
         self.main = tk.Frame(self)
+        self.add_rule_btn = tk.Button(self.main, text='Add Rule', command=self.new_rule)
+        self.add_rule_btn.pack()
         # MIDI OUT bar
         self.midi_out_label = self.create_midi_bar('OUT')
 
         # PACKING
         self.packer()
+
+    def new_rule(self):
+        self.add_rule_btn.pack_forget()
+        self.rule_frame = tk.Frame(self.main)
+        tk.Label(self.rule_frame, text='Route message:').grid(row=0, column=0, columnspan=4)
+        tk.Label(self.rule_frame, text='CH:').grid(row=1, column=0)
+        in_ch = ttk.Combobox(self.rule_frame, values=[i for i in range(1, 17)], width=3)
+        in_ch.grid(row=1, column=1)
+        tk.Label(self.rule_frame, text='NOTE:').grid(row=1, column=2)
+        in_note = ttk.Combobox(self.rule_frame, values=[i for i in range(1, 129)], width=5)
+        in_note.grid(row=1, column=3)
+        tk.Label(self.rule_frame, text='To:').grid(row=2, column=0, columnspan=4)
+        tk.Label(self.rule_frame, text='CH:').grid(row=3, column=0)
+        out_ch = ttk.Combobox(self.rule_frame, values=[i for i in range(1, 17)], width=3)
+        out_ch.grid(row=3, column=1)
+        tk.Label(self.rule_frame, text='NOTE:').grid(row=3, column=2)
+        out_note = ttk.Combobox(self.rule_frame, values=[i for i in range(1, 129)], width=5)
+        out_note.grid(row=3, column=3)
+        tk.Button(self.rule_frame, text='OK', command=lambda: self.add_rule(in_ch.get(), in_note.get(), out_ch.get(), out_note.get())).grid(row=4, column=0, columnspan=4)
+        self.rule_frame.pack()
+
+    # TODO: This method must be in a repo class
+    def add_rule(self, in_ch, in_note, out_ch, out_note):
+        # pack_forget before destroy avoid little glitch
+        self.rule_frame.pack_forget()
+        self.rule_frame.destroy()
+        frame = tk.Frame(self.main)
+        tk.Label(frame, text=f"Route {in_ch}:{in_note} to {out_ch}:{out_note}").pack()
+        frame.pack()
 
     def midi_in_callback(self, msg, data=None):
         prefix = "MIDI IN:\n"
