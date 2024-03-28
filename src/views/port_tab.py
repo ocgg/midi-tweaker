@@ -2,7 +2,8 @@ import rtmidi
 import rtmidi.midiconstants as consts
 import tkinter as tk
 import tkinter.ttk as ttk
-import src.rule
+# import src.rule
+
 
 class PortTab(ttk.Frame):
     def __init__(self, master, port_name, port_index):
@@ -16,8 +17,10 @@ class PortTab(ttk.Frame):
         self.midi_in_label = self.create_midi_bar('IN')
         # Main frame
         self.main = tk.Frame(self)
-        self.add_rule_btn = tk.Button(self.main, text='Add Rule', command=self.new_rule)
-        self.add_rule_btn.pack()
+        self.add_rule_btn = tk.Button(
+            self.main,
+            text='Add Rule',
+            command=self.new_rule)
         # MIDI OUT bar
         self.midi_out_label = self.create_midi_bar('OUT')
 
@@ -66,17 +69,6 @@ class PortTab(ttk.Frame):
         elif msg_type == consts.CONTROL_CHANGE:  # CC
             txt = f"CONTROL CHANGE | CH: {channel} | CONTROLLER: {msg_data[1]} | VAL: {msg_data[2]}"
             # TODO: handle pitch bend & other General Midi specific messages
-            # AI-generated:
-            # # Vérification si le message est le début d'un message de Pitch Bend
-            # if controller == 0 or controller == 32:
-            #     # Ici, vous devez stocker la valeur du premier message CC
-            #     # et attendre le deuxième message CC pour calculer la valeur de Pitch Bend
-            #     # Ceci est une simplification et nécessite une logique supplémentaire pour gérer correctement les messages de Pitch Bend
-            #     print(f"{prefix} Pitch Bend Start: CH: {channel}, Controller: {controller}, Value: {value}")
-            # elif controller == 64 or controller == 96:
-            #     # Ici, vous devez combiner la valeur du premier message CC avec celle-ci pour obtenir la valeur de Pitch Bend
-            #     # Ceci est une simplification et nécessite une logique supplémentaire pour gérer correctement les messages de Pitch Bend
-            #     print(f"{prefix} Pitch Bend Value: CH: {channel}, Controller: {controller}, Value: {value}")
         else:
             txt = f"Not covered yet: {msg}"
         self.midi_in_label.configure(text=prefix + txt)
@@ -86,16 +78,16 @@ class PortTab(ttk.Frame):
             self,
             text=f"MIDI {source}:\nWaiting for messages...",
             anchor='w',
-            width=50
-        )
+            width=50)
         return midi_label
 
     def packer(self):
-        midi_label_options = { 'fill': 'x', 'padx': 10, 'pady': 10 }
+        midi_label_options = {'fill': 'x', 'padx': 10, 'pady': 10}
 
         self.midi_in_label.pack(**midi_label_options)
         self.main.pack(fill='both', expand=True)
         ttk.Separator(self.main, orient='horizontal').pack(side='top', fill='x')
+        self.add_rule_btn.pack(expand=True)
         ttk.Separator(self.main, orient='horizontal').pack(side='bottom', fill='x')
         self.midi_out_label.pack(**midi_label_options)
         self.pack(fill='both', expand=True)
