@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from src.views.port_tab import PortTab
+import src.port_tab as port_tab
 
 
 class MainFrame(ttk.Notebook):
@@ -13,7 +13,7 @@ class MainFrame(ttk.Notebook):
     # Called from ApplicationMenu ("Open MIDI Port" menu)
     def create_tab(self, port_name, port_index):
         self.first_label.pack_forget()
-        tab = PortTab(
+        tab = port_tab.PortTab(
             self,
             port_name,
             port_index)

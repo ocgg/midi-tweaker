@@ -1,6 +1,6 @@
 import tkinter as tk
-import src.views.main_window.application_menu as app_menu
-import src.views.main_window.main_frame as main_frame
+import src.main_window.application_menu as app_menu
+import src.main_window.main_frame as main_frame
 
 
 class ApplicationWindow(tk.Tk):  # inherits from tk.Tk
