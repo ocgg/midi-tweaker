@@ -2,9 +2,16 @@ import rtmidi
 import rtmidi.midiconstants as consts
 import tkinter as tk
 import tkinter.ttk as ttk
+import src.tabs.rule_form_frame as rule_form_frame
+import src.tabs.rules_list_frame as rules_list_frame
 
 
-class PortTab(ttk.Frame):
+###############################################################################
+# Tab is the main router class for CRUD of Rule model                         #
+# It manages the display of rules_list_frame & rule_form_frame                #
+# And send actions to rules_controller                                        #
+###############################################################################
+class Tab(ttk.Frame):
     def __init__(self, master, port_name, port_index):
         super().__init__(master)
 
@@ -13,47 +20,26 @@ class PortTab(ttk.Frame):
         self.midi_in.set_callback(self.midi_in_callback)
 
         # MIDI IN bar
-        self.midi_in_label = self.create_midi_bar('IN')
-        # Main frame
-        self.main = tk.Frame(self)
-        self.add_rule_btn = tk.Button(
-            self.main,
-            text='Add Rule',
-            command=self.new_rule)
+        self.midi_in_label = self.__create_midi_bar('IN')
+
+        # MAIN CONTENT:
+        # must toggle between rules_list_frame and rule_form_frame
+        self.rules_list_frame = rules_list_frame.RulesListFrame(self)
+        self.rule_form_frame = rule_form_frame.RuleFormFrame(self)
+
         # MIDI OUT bar
-        self.midi_out_label = self.create_midi_bar('OUT')
+        self.midi_out_label = self.__create_midi_bar('OUT')
 
-        # PACKING
-        self.packer()
+        # Pack all widgets
+        self.__packer()
 
-    def new_rule(self):
-        self.add_rule_btn.pack_forget()
-        self.rule_frame = tk.Frame(self.main)
-        tk.Label(self.rule_frame, text='Route message:').grid(row=0, column=0, columnspan=4)
-        tk.Label(self.rule_frame, text='CH:').grid(row=1, column=0)
-        in_ch = ttk.Combobox(self.rule_frame, values=[i for i in range(1, 17)], width=3)
-        in_ch.grid(row=1, column=1)
-        tk.Label(self.rule_frame, text='NOTE:').grid(row=1, column=2)
-        in_note = ttk.Combobox(self.rule_frame, values=[i for i in range(1, 129)], width=5)
-        in_note.grid(row=1, column=3)
-        tk.Label(self.rule_frame, text='To:').grid(row=2, column=0, columnspan=4)
-        tk.Label(self.rule_frame, text='CH:').grid(row=3, column=0)
-        out_ch = ttk.Combobox(self.rule_frame, values=[i for i in range(1, 17)], width=3)
-        out_ch.grid(row=3, column=1)
-        tk.Label(self.rule_frame, text='NOTE:').grid(row=3, column=2)
-        out_note = ttk.Combobox(self.rule_frame, values=[i for i in range(1, 129)], width=5)
-        out_note.grid(row=3, column=3)
-        tk.Button(self.rule_frame, text='OK', command=lambda: self.add_rule(in_ch.get(), in_note.get(), out_ch.get(), out_note.get())).grid(row=4, column=0, columnspan=4)
-        self.rule_frame.pack()
+    def display_rule_form(self):
+        self.rules_list_frame.grid_forget()
+        self.rule_form_frame.grid(row=2)
 
-    # TODO: This method must be in a repo class
-    def add_rule(self, in_ch, in_note, out_ch, out_note):
-        # pack_forget before destroy avoid little glitch
-        self.rule_frame.pack_forget()
-        self.rule_frame.destroy()
-        frame = tk.Frame(self.main)
-        tk.Label(frame, text=f"Route {in_ch}:{in_note} to {out_ch}:{out_note}").pack()
-        frame.pack()
+    def display_rules_list(self):
+        self.rule_form_frame.grid_forget()
+        self.rules_list_frame.grid(row=2)
 
     def midi_in_callback(self, msg, data=None):
         prefix = "MIDI IN:\n"
@@ -72,7 +58,7 @@ class PortTab(ttk.Frame):
             txt = f"Not covered yet: {msg}"
         self.midi_in_label.configure(text=prefix + txt)
 
-    def create_midi_bar(self, source):
+    def __create_midi_bar(self, source):
         midi_label = ttk.Label(
             self,
             text=f"MIDI {source}:\nWaiting for messages...",
@@ -80,13 +66,14 @@ class PortTab(ttk.Frame):
             width=50)
         return midi_label
 
-    def packer(self):
-        midi_label_options = {'fill': 'x', 'padx': 10, 'pady': 10}
+    def __packer(self):
+        midi_label_options = {'padx': 10, 'pady': 10}
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_columnconfigure(0, weight=1)
 
-        self.midi_in_label.pack(**midi_label_options)
-        self.main.pack(fill='both', expand=True)
-        ttk.Separator(self.main, orient='horizontal').pack(side='top', fill='x')
-        self.add_rule_btn.pack(expand=True)
-        ttk.Separator(self.main, orient='horizontal').pack(side='bottom', fill='x')
-        self.midi_out_label.pack(**midi_label_options)
+        self.midi_in_label.grid(row=0, **midi_label_options)
+        ttk.Separator(self, orient='horizontal').grid(row=1, sticky='ew')
+        self.rules_list_frame.grid(row=2)
+        ttk.Separator(self, orient='horizontal').grid(row=3, sticky='ew')
+        self.midi_out_label.grid(row=4, **midi_label_options)
         self.pack(fill='both', expand=True)
