@@ -1,6 +1,6 @@
 import tkinter as tk
-import src.main_window.application_menu as app_menu
-import src.main_window.main_frame as main_frame
+from src.gui.application_menu import ApplicationMenu
+from src.gui.application_main_frame import ApplicationMainFrame
 
 
 class ApplicationWindow(tk.Tk):  # inherits from tk.Tk
@@ -12,8 +12,8 @@ class ApplicationWindow(tk.Tk):  # inherits from tk.Tk
 
         # LAYOUT ##########
         # Application menu
-        self.application_menu = app_menu.ApplicationMenu(self)
+        self.application_menu = ApplicationMenu(self)
         self.config(menu=self.application_menu)
         # Main frame
-        self.MAIN_FRAME = main_frame.MainFrame(self)
+        self.MAIN_FRAME = ApplicationMainFrame(self)
         self.MAIN_FRAME.pack(fill='both', expand=True)
