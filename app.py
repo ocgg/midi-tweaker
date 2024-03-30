@@ -1,6 +1,6 @@
-import src.main_window.application_window
+from src.gui.application_window import ApplicationWindow
 
 # Entry point
 if __name__ == "__main__":
-    window = src.main_window.application_window.ApplicationWindow()
+    window = ApplicationWindow()
     window.mainloop()
