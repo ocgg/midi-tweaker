@@ -18,7 +18,7 @@ class Tab(ttk.Frame):
         # MAIN CONTENT:
         # toggle between rules_list_frame and rule_form_frame
         self.rules_list_frame = RulesListFrame(self)
-        self.rule_form_frame = RuleFormFrame(self)
+        self.rule_form_frame = RuleFormFrame(self, self.ROUTER)
         # MIDI OUT bar
         self.midi_out_label = self.__create_midi_bar('OUT')
 

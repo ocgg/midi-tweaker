@@ -1,4 +1,4 @@
-import rtmidi
+import mido
 import tkinter as tk
 
 
@@ -34,7 +34,7 @@ class ApplicationMenu(tk.Menu):
 
     def __build_midi_port_menu(self):
         # Get MIDI ports
-        midi_ports = rtmidi.MidiIn().get_ports()
+        midi_ports = mido.get_input_names()
         # Delete menu entries
         if self.__ports_menu_has_entries():
             self.ports_menu.delete(0, 'end')

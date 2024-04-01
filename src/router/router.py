@@ -1,6 +1,7 @@
 import rtmidi
 import rtmidi.midiconstants as consts
 from tkinter import messagebox
+# from src.router.midi_msg import MidiMsg
 
 
 # Router is what links the GUI with the midi port & rules.
@@ -9,7 +10,7 @@ from tkinter import messagebox
 class Router:
     def __init__(self, tab, port_name):
         self.TAB = tab
-        self.midi_in = self.__open_midi_in(port_name)
+        self.midi_in = self._open_midi_in(port_name)
         self.midi_in.set_callback(self.midi_in_callback)
         self.rules = []
 
@@ -17,6 +18,10 @@ class Router:
         pass
 
     def midi_in_callback(self, msg, data=None):
+        # Convert msg to MidiMsg object
+        # midi_msg = MidiMsg(msg)
+        # 1.display midi in message (tab)
+        # 2. apply rules & send to midi out
         prefix = "MIDI IN:\n"
         msg_data = msg[0]
         channel = msg_data[0] & 0xF     # lower 4 bits
@@ -35,7 +40,7 @@ class Router:
 
     # PRIVATE METHODS #########################################################
 
-    def __open_midi_in(self, port_name):
+    def _open_midi_in(self, port_name):
         ports = rtmidi.MidiIn().get_ports()
         try:
             port = next(i for i, port in enumerate(ports)
