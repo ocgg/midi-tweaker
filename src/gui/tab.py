@@ -38,7 +38,7 @@ class Tab(ttk.Frame):
     def __create_midi_bar(self, source):
         midi_label = ttk.Label(
             self,
-            text=f"MIDI {source}:\nWaiting for messages...",
+            text=f"MIDI {source}: Waiting for messages...",
             anchor='w',
             width=50)
         return midi_label
