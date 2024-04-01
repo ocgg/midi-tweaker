@@ -9,7 +9,7 @@ class Router:
         self.TAB = tab
         self.midi_in = self._open_midi_in(port_name)
         self.midi_in.callback = self._midi_in_callback
-        self.midi_out = mido.open_output('gnah', virtual=True)
+        self.midi_out = mido.open_output(f'TWEAKED {port_name}', virtual=True)
         self.rules = []
 
     def add_rule(self, rule):
