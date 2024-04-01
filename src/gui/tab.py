@@ -17,7 +17,7 @@ class Tab(ttk.Frame):
         self.midi_in_label = self.__create_midi_bar('IN')
         # MAIN CONTENT:
         # toggle between rules_list_frame and rule_form_frame
-        self.rules_list_frame = RulesListFrame(self)
+        self.rules_list_frame = RulesListFrame(self, self.ROUTER)
         self.rule_form_frame = RuleFormFrame(self, self.ROUTER)
         # MIDI OUT bar
         self.midi_out_label = self.__create_midi_bar('OUT')
@@ -31,6 +31,7 @@ class Tab(ttk.Frame):
 
     def display_rules_list(self):
         self.rule_form_frame.grid_forget()
+        self.rules_list_frame.update()
         self.rules_list_frame.grid(row=2)
 
     # PRIVATE METHODS #########################################################
