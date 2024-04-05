@@ -26,10 +26,14 @@ class TabRouter:
             print('applies: ', rule.apply_to(msg))
             if rule.apply_to(msg):
                 msg = rule.translate(msg)
-        # Send the message to midi out
-        self.midi_out.send(msg)
-        # Display the message in the GUI
-        self.TAB.midi_out_label.configure(text=f"MIDI_OUT: {str(msg)}")
+
+        try:
+            # Send the message to midi out
+            self.midi_out.send(msg)
+            # Display the message in the GUI
+            self.TAB.midi_out_label.configure(text=f"MIDI_OUT: {str(msg)}")
+        except Exception as e:
+            self.TAB.midi_out_label.configure(text=f"MIDI_OUT: {str(e)}")
 
     def _open_midi_in(self, port_name):
         try:
