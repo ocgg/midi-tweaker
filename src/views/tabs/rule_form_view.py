@@ -16,11 +16,11 @@ class RuleFormView(tk.Frame):
         self.out_msg_frame = tk.Frame(self)
 
         tk.Label(self, text='Route:').pack(side='top')
-        self.from_msg_form = self._build_form(self.in_msg_frame)
+        self.in_msg_form = self._build_form(self.in_msg_frame)
         self.in_msg_frame.pack(side='top')
 
         tk.Label(self, text='To:').pack(side='top')
-        self.to_msg_form = self._build_form(self.out_msg_frame)
+        self.out_msg_form = self._build_form(self.out_msg_frame)
         self.out_msg_frame.pack(side='top')
 
         self.submit_btn = tk.Button(self, text='OK')
@@ -31,12 +31,9 @@ class RuleFormView(tk.Frame):
     def _build_form(self, frame):
         inputs = self._base_inputs(frame)
 
-        inputs['ch']['label'].data = {'mido_name': 'channel'}
         inputs['ch']['label'].grid(row=0, column=0)
-        msg_ch = inputs['ch']['input']
-        msg_ch.grid(row=0, column=1)
+        inputs['ch']['input'].grid(row=0, column=1)
 
-        inputs['type']['label'].data = {'mido_name': 'type'}
         inputs['type']['label'].grid(row=0, column=2)
         msg_type = inputs['type']['input']
         msg_type.grid(row=0, column=3)
@@ -68,29 +65,24 @@ class RuleFormView(tk.Frame):
 
     def _create_note_inputs(self, frame):
         inputs = self._note_inputs(frame)
-        inputs['note']['label'].data = {'mido_name': 'note'}
         inputs['note']['label'].grid(row=1, column=0)
         self.in_note = inputs['note']['input']
         self.in_note.grid(row=1, column=1)
-        inputs['velocity']['label'].data = {'mido_name': 'velocity'}
         inputs['velocity']['label'].grid(row=1, column=2)
         self.in_vel = inputs['velocity']['input']
         self.in_vel.grid(row=1, column=3)
 
     def _create_control_inputs(self, frame):
         inputs = self._control_inputs(frame)
-        inputs['control']['label'].data = {'mido_name': 'control'}
         inputs['control']['label'].grid(row=1, column=0)
         self.in_control = inputs['control']['input']
         self.in_control.grid(row=1, column=1)
-        inputs['value']['label'].data = {'mido_name': 'value'}
         inputs['value']['label'].grid(row=1, column=2)
         self.in_value = inputs['value']['input']
         self.in_value.grid(row=1, column=3)
 
     def _create_pitch_wheel_inputs(self, frame):
         inputs = self._pitch_wheel_inputs(frame)
-        inputs['value']['label'].data = {'mido_name': 'pitch'}
         inputs['value']['label'].grid(row=1, column=0)
         self.in_value = inputs['value']['input']
         self.in_value.grid(row=1, column=1)
@@ -98,66 +90,76 @@ class RuleFormView(tk.Frame):
     # INPUTS ##################################################################
 
     def _pitch_wheel_inputs(self, frame):
-        return {
+        inputs = {
             'value': {
                 'label': tk.Label(frame, text='VALUE:'),
-                'input': ttk.Combobox(
-                    frame,
-                    values=self.RANGE_128,
-                    state='readonly',
-                    width=4),
+                'input': ttk.Combobox(frame,
+                                      values=self.RANGE_128,
+                                      state='readonly',
+                                      width=4),
             },
         }
+        inputs['value']['label'].data = {'mido_name': 'pitch'}
+        # Default value to 'all'
+        inputs['value']['input'].current(0)
+        return inputs
 
     def _control_inputs(self, frame):
-        return {
+        inputs = {
             'control': {
                 'label': tk.Label(frame, text='CONTROL:'),
-                'input': ttk.Combobox(
-                    frame,
-                    values=self.RANGE_128,
-                    state='readonly',
-                    width=4),
+                'input': ttk.Combobox(frame,
+                                      values=self.RANGE_128,
+                                      state='readonly',
+                                      width=4),
             },
             'value': {
                 'label': tk.Label(frame, text='VALUE:'),
-                'input': ttk.Combobox(
-                    frame,
-                    values=self.RANGE_128,
-                    state='readonly',
-                    width=4),
+                'input': ttk.Combobox(frame,
+                                      values=self.RANGE_128,
+                                      state='readonly',
+                                      width=4),
             },
         }
+        inputs['control']['label'].data = {'mido_name': 'control'}
+        inputs['value']['label'].data = {'mido_name': 'value'}
+        # Default value to 'all'
+        inputs['control']['input'].current(0)
+        inputs['value']['input'].current(0)
+        return inputs
 
     def _note_inputs(self, frame):
-        return {
+        inputs = {
             'note': {
                 'label': tk.Label(frame, text='NOTE:'),
-                'input': ttk.Combobox(
-                    frame,
-                    values=self.RANGE_128,
-                    state='readonly',
-                    width=4),
+                'input': ttk.Combobox(frame,
+                                      values=self.RANGE_128,
+                                      state='readonly',
+                                      width=4),
             },
             'velocity': {
                 'label': tk.Label(frame, text='VELOCITY:'),
-                'input': ttk.Combobox(
-                    frame,
-                    values=self.RANGE_128,
-                    state='readonly',
-                    width=4),
+                'input': ttk.Combobox(frame,
+                                      values=self.RANGE_128,
+                                      state='readonly',
+                                      width=4),
             },
         }
+        inputs['note']['label'].data = {'mido_name': 'note'}
+        inputs['velocity']['label'].data = {'mido_name': 'velocity'}
+        # Default value to 'all'
+        inputs['note']['input'].current(0)
+        inputs['velocity']['input'].current(0)
+        return inputs
 
     def _base_inputs(self, frame):
-        return {
+        inputs = {
             'ch': {
                 'label': ttk.Label(frame, text='CH:'),
-                'input': ttk.Combobox(
-                    frame,
-                    values=self.RANGE_16,
-                    state='readonly',
-                    width=4),
+                'input': ttk.Combobox(frame,
+                                      values=self.RANGE_16,
+                                      state='readonly',
+                                      width=4),
             },
             'type': {
                 'label': ttk.Label(frame, text='TYPE:'),
@@ -167,3 +169,9 @@ class RuleFormView(tk.Frame):
                                       width=17)
             },
         }
+        inputs['ch']['label'].data = {'mido_name': 'channel'}
+        inputs['type']['label'].data = {'mido_name': 'type'}
+        # Default value to 'all'
+        inputs['ch']['input'].current(0)
+        inputs['type']['input'].current(0)
+        return inputs
