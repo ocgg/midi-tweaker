@@ -1,6 +1,14 @@
-from src.gui.application_window import ApplicationWindow
+from src.models.application_model import ApplicationModel
+from src.views.application_view import ApplicationView
+from src.controllers.application_controller import ApplicationController
 
-# Entry point
+
+def main():
+    model = ApplicationModel()
+    view = ApplicationView()
+    controller = ApplicationController(model, view)
+    controller.start()
+
+
 if __name__ == "__main__":
-    window = ApplicationWindow()
-    window.mainloop()
+    main()
