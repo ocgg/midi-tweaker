@@ -13,8 +13,7 @@ class TabRouter:
         self.rules = []
 
     def add_rule(self, in_msg_inputs, out_msg_inputs):
-        rule_attributes = list(in_msg_inputs.keys())
-        rule = Rule(rule_attributes, in_msg_inputs, out_msg_inputs)
+        rule = Rule(in_msg_inputs, out_msg_inputs)
         self.rules.append(rule)
 
     # MIDI CONNECTIONS ########################################################
@@ -24,7 +23,7 @@ class TabRouter:
         self.TAB.midi_in_label.configure(text=f"MIDI_IN: {str(msg)}")
         # Apply the rules
         for rule in self.rules:
-            print(rule.apply_to(msg))
+            print('applies: ', rule.apply_to(msg))
             if rule.apply_to(msg):
                 msg = rule.translate(msg)
         # Send the message to midi out

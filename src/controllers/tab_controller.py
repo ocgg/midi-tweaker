@@ -40,19 +40,41 @@ class TabController:
         out_msg_frame = tab.frames['form'].out_msg_frame
 
         in_msg_inputs = self._get_inputs(in_msg_frame)
-        out_msg_inputs = self._get_inputs(out_msg_frame)
+        out_msg_inputs = self._get_inputs(out_msg_frame, in_msg_inputs)
+        print('in msg input: ', in_msg_inputs)
+        for k, v in in_msg_inputs.items():
+            print(v)
+            if v == ['all∕keep']:
+                del in_msg_inputs[k]
+        print('in msg input: ', in_msg_inputs)
+        print('out msg input: ', out_msg_inputs)
 
         tab_router.add_rule(in_msg_inputs, out_msg_inputs)
 
         tab.frames['list'].update_list(tab_router.rules)
         tab.display_rules_list()
 
-    def _get_inputs(self, frame):
+    def _get_inputs(self, frame, in_msg_inputs=None):
         inputs = {}
-        for i, widget in enumerate(frame.winfo_children()):
-            if i % 2 == 0:
-                value = frame.winfo_children()[i+1].get()
-                if value and value != 'all':
-                    label = widget.data['mido_name']
-                    inputs[label] = int(value)-1 if value.isdigit() else value
+        widgets = frame.winfo_children()
+        for i in widgets:
+            print(i.get()) if i.winfo_class() == 'TCombobox' else None
+
+        for i, widget in enumerate(widgets):
+            # skips labels & default values
+            if self._is_label_or_default_value(widget):
+                continue
+
+            value = widget.get()
+            value = [int(value)-1] if value.isdigit() else [value]
+            attribute = widgets[i-1].data['mido_name']
+
+            inputs[attribute] = value
+
         return inputs
+
+    def _is_label_or_default_value(self, widget):
+        try:
+            return widget.get() == 'all/keep'
+        except AttributeError:
+            return True

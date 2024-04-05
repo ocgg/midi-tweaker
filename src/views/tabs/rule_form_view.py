@@ -3,14 +3,14 @@ import tkinter.ttk as ttk
 
 
 class RuleFormView(tk.Frame):
-    TYPES = ['all', 'note_on', 'note_off', 'control_change', "pitchwheel"]
-    RANGE_16 = ['all'] + [i for i in range(1, 17)]
-    RANGE_128 = ['all'] + [i for i in range(1, 129)]
+    ALL = 'all/keep'
+    TYPES = [ALL, 'note_on', 'note_off', 'control_change', "pitchwheel"]
+    RANGE_16 = [ALL] + [i for i in range(1, 17)]
+    RANGE_128 = [ALL] + [i for i in range(1, 129)]
 
     def __init__(self, master):
         super().__init__(master)
         self.TAB = master
-        # self.ROUTER = router
 
         self.in_msg_frame = tk.Frame(self)
         self.out_msg_frame = tk.Frame(self)
@@ -20,7 +20,7 @@ class RuleFormView(tk.Frame):
         self.in_msg_frame.pack(side='top')
 
         tk.Label(self, text='To:').pack(side='top')
-        self.out_msg_form = self._build_form(self.out_msg_frame)
+        self.out_msg_form = self._build_form(self.out_msg_frame, True)
         self.out_msg_frame.pack(side='top')
 
         self.submit_btn = tk.Button(self, text='OK')
@@ -28,8 +28,8 @@ class RuleFormView(tk.Frame):
 
     # LAYOUT ##################################################################
 
-    def _build_form(self, frame):
-        inputs = self._base_inputs(frame)
+    def _build_form(self, frame, is_for_out_msg=False):
+        inputs = self._base_inputs(frame, is_for_out_msg)
 
         inputs['ch']['label'].grid(row=0, column=0)
         inputs['ch']['input'].grid(row=0, column=1)
@@ -89,7 +89,7 @@ class RuleFormView(tk.Frame):
 
     # INPUTS ##################################################################
 
-    def _pitch_wheel_inputs(self, frame):
+    def _pitch_wheel_inputs(self, frame, is_for_out_msg=False):
         inputs = {
             'value': {
                 'label': tk.Label(frame, text='VALUE:'),
@@ -104,7 +104,7 @@ class RuleFormView(tk.Frame):
         inputs['value']['input'].current(0)
         return inputs
 
-    def _control_inputs(self, frame):
+    def _control_inputs(self, frame, is_for_out_msg=False):
         inputs = {
             'control': {
                 'label': tk.Label(frame, text='CONTROL:'),
@@ -128,7 +128,7 @@ class RuleFormView(tk.Frame):
         inputs['value']['input'].current(0)
         return inputs
 
-    def _note_inputs(self, frame):
+    def _note_inputs(self, frame, is_for_out_msg=False):
         inputs = {
             'note': {
                 'label': tk.Label(frame, text='NOTE:'),
@@ -152,7 +152,7 @@ class RuleFormView(tk.Frame):
         inputs['velocity']['input'].current(0)
         return inputs
 
-    def _base_inputs(self, frame):
+    def _base_inputs(self, frame, is_for_out_msg=False):
         inputs = {
             'ch': {
                 'label': ttk.Label(frame, text='CH:'),
