@@ -10,6 +10,7 @@ class Rule:
         if not self._apply_to(msg):
             return msg
 
+        print(self.out_msg.keys())
         for attribute in self.out_msg.keys():
             out_value = self.out_msg[attribute][0]
             setattr(msg, attribute, out_value)

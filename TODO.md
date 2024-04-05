@@ -8,3 +8,7 @@
 - plus joli
 
 - pouvoir choisir les inputs de in_msg dans les inputs de out_msg
+
+- Routings à faire :
+    - valeurs de notes/control
+    - conversion note/control change

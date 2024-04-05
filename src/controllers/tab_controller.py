@@ -42,11 +42,6 @@ class TabController:
         in_msg_inputs = self._get_inputs(in_msg_frame)
         out_msg_inputs = self._get_inputs(out_msg_frame, in_msg_inputs)
         print('in msg input: ', in_msg_inputs)
-        for k, v in in_msg_inputs.items():
-            print(v)
-            if v == ['all∕keep']:
-                del in_msg_inputs[k]
-        print('in msg input: ', in_msg_inputs)
         print('out msg input: ', out_msg_inputs)
 
         tab_router.add_rule(in_msg_inputs, out_msg_inputs)
@@ -66,6 +61,8 @@ class TabController:
                 continue
 
             value = widget.get()
+
+            # if in_msg_inputs and 
             value = [int(value)-1] if value.isdigit() else [value]
             attribute = widgets[i-1].data['mido_name']
 
