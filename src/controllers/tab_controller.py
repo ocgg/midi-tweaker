@@ -40,38 +40,39 @@ class TabController:
         out_msg_frame = tab.frames['form'].out_msg_frame
 
         in_msg_inputs = self._get_inputs(in_msg_frame)
-        out_msg_inputs = self._get_inputs(out_msg_frame, in_msg_inputs)
-        print('in msg input: ', in_msg_inputs)
-        print('out msg input: ', out_msg_inputs)
+        out_msg_inputs = self._get_inputs(out_msg_frame)
+        self._clear_inputs(in_msg_inputs, out_msg_inputs)
 
         tab_router.add_rule(in_msg_inputs, out_msg_inputs)
 
         tab.frames['list'].update_list(tab_router.rules)
         tab.display_rules_list()
 
-    def _get_inputs(self, frame, in_msg_inputs=None):
+    def _get_inputs(self, frame):
         inputs = {}
         widgets = frame.winfo_children()
-        for i in widgets:
-            print(i.get()) if i.winfo_class() == 'TCombobox' else None
 
         for i, widget in enumerate(widgets):
-            # skips labels & default values
-            if self._is_label_or_default_value(widget):
+            # skips labels
+            try:
+                value = widget.get()
+            except AttributeError:
                 continue
-
-            value = widget.get()
-
-            # if in_msg_inputs and 
-            value = [int(value)-1] if value.isdigit() else [value]
+            value = int(value)-1 if value.isdigit() else value
             attribute = widgets[i-1].data['mido_name']
-
             inputs[attribute] = value
-
         return inputs
 
-    def _is_label_or_default_value(self, widget):
-        try:
-            return widget.get() == 'all/keep'
-        except AttributeError:
-            return True
+    def _clear_inputs(self, in_msg_inputs, out_msg_inputs):
+        # removes all key with the same value in both
+        for key in list(in_msg_inputs.keys()):
+            if in_msg_inputs[key] == out_msg_inputs[key]:
+                in_msg_inputs.pop(key)
+                out_msg_inputs.pop(key)
+        # removes all key with value 'all/keep'
+        for k, v in list(in_msg_inputs.items()):
+            if v == 'all/keep':
+                in_msg_inputs.pop(k)
+        for k, v in list(out_msg_inputs.items()):
+            if v == 'all/keep':
+                out_msg_inputs.pop(k)

@@ -19,19 +19,16 @@ class TabRouter:
     # MIDI CONNECTIONS ########################################################
 
     def _midi_in_callback(self, msg, data=None):
-        # Display the message in the GUI
-        self.TAB.midi_in_label.configure(text=f"MIDI_IN: {str(msg)}")
+        in_msg = msg.copy()
         # Apply the rules
         for rule in self.rules:
             msg = rule.translate(msg)
-
-        try:
-            # Send the message to midi out
-            self.midi_out.send(msg)
-            # Display the message in the GUI
-            self.TAB.midi_out_label.configure(text=f"MIDI_OUT: {str(msg)}")
-        except Exception as e:
-            self.TAB.midi_out_label.configure(text=f"MIDI_OUT: {str(e)}")
+        # Send the message to midi out
+        self.midi_out.send(msg)
+        # Display the message in the GUI
+        self.TAB.midi_in_label.configure(text=f"MIDI_IN: {str(in_msg)}")
+        # Display the message in the GUI
+        self.TAB.midi_out_label.configure(text=f"MIDI_OUT: {str(msg)}")
 
     def _open_midi_in(self, port_name):
         try:
