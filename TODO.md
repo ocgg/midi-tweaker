@@ -12,3 +12,6 @@
 - Routings à faire :
     - valeurs de notes/control
     - conversion note/control change
+
+- Refresh marche pas
+- ignorer les ports midi out dans app menu
