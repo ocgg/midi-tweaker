@@ -68,12 +68,14 @@ class TabController:
         same_types = in_type == out_type
         if not same_types and 'note' in in_type and 'note' in out_type:
             same_types = True
-        # removes all key with the same value in both for ch and type
+
+        # removes all key with the same value
         for key in list(in_msg_inputs.keys()):
             has_same_value = in_msg_inputs[key] == out_msg_inputs[key]
-            if not same_types and has_same_value:
+            if not same_types and key in out_msg_inputs and has_same_value:
                 in_msg_inputs.pop(key)
                 out_msg_inputs.pop(key)
+
         # removes all key with value 'all/keep'
         for k, v in list(in_msg_inputs.items()):
             if v == 'all/keep':
