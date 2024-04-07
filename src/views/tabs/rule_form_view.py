@@ -1,35 +1,37 @@
-import tkinter as tk
 import tkinter.ttk as ttk
 
 
-class RuleFormView(tk.Frame):
+class RuleFormView(ttk.Frame):
+    # INPUT VALUES ##########
     ALL = 'all/keep'
     TYPES = [ALL, 'note_on', 'note_off', 'control_change', "pitchwheel"]
     RANGE_16 = [ALL] + [i for i in range(1, 17)]
     RANGE_128 = [ALL] + [i for i in range(1, 129)]
 
+    # STYLES ###############
+
     def __init__(self, master):
         super().__init__(master)
         self.TAB = master
 
-        self.in_msg_frame = tk.Frame(self)
-        self.out_msg_frame = tk.Frame(self)
+        self.in_msg_frame = ttk.Frame(self)
+        self.out_msg_frame = ttk.Frame(self)
 
-        tk.Label(self, text='Route:').pack(side='top')
+        ttk.Label(self, text='Route:').pack(side='top')
         self.in_msg_form = self._build_form(self.in_msg_frame)
         self.in_msg_frame.pack(side='top')
 
-        tk.Label(self, text='To:').pack(side='top')
-        self.out_msg_form = self._build_form(self.out_msg_frame, True)
+        ttk.Label(self, text='To:').pack(side='top')
+        self.out_msg_form = self._build_form(self.out_msg_frame)
         self.out_msg_frame.pack(side='top')
 
-        self.submit_btn = tk.Button(self, text='OK')
+        self.submit_btn = ttk.Button(self, text='OK')
         self.submit_btn.pack(side='bottom')
 
     # LAYOUT ##################################################################
 
-    def _build_form(self, frame, is_for_out_msg=False):
-        inputs = self._base_inputs(frame, is_for_out_msg)
+    def _build_form(self, frame):
+        inputs = self._base_inputs(frame)
 
         inputs['ch']['label'].grid(row=0, column=0)
         inputs['ch']['input'].grid(row=0, column=1)
@@ -87,10 +89,10 @@ class RuleFormView(tk.Frame):
 
     # INPUTS ##################################################################
 
-    def _pitch_wheel_inputs(self, frame, is_for_out_msg=False):
+    def _pitch_wheel_inputs(self, frame):
         inputs = {
             'value': {
-                'label': tk.Label(frame, text='VALUE:'),
+                'label': ttk.Label(frame, text='VALUE:'),
                 'input': ttk.Combobox(frame,
                                       values=self.RANGE_128,
                                       state='readonly',
@@ -102,17 +104,17 @@ class RuleFormView(tk.Frame):
         inputs['value']['input'].current(0)
         return inputs
 
-    def _control_inputs(self, frame, is_for_out_msg=False):
+    def _control_inputs(self, frame):
         inputs = {
             'control': {
-                'label': tk.Label(frame, text='CONTROL:'),
+                'label': ttk.Label(frame, text='CONTROL:'),
                 'input': ttk.Combobox(frame,
                                       values=self.RANGE_128,
                                       state='readonly',
                                       width=4),
             },
             'value': {
-                'label': tk.Label(frame, text='VALUE:'),
+                'label': ttk.Label(frame, text='VALUE:'),
                 'input': ttk.Combobox(frame,
                                       values=self.RANGE_128,
                                       state='readonly',
@@ -126,17 +128,17 @@ class RuleFormView(tk.Frame):
         inputs['value']['input'].current(0)
         return inputs
 
-    def _note_inputs(self, frame, is_for_out_msg=False):
+    def _note_inputs(self, frame):
         inputs = {
             'note': {
-                'label': tk.Label(frame, text='NOTE:'),
+                'label': ttk.Label(frame, text='NOTE:'),
                 'input': ttk.Combobox(frame,
                                       values=self.RANGE_128,
                                       state='readonly',
                                       width=4),
             },
             'velocity': {
-                'label': tk.Label(frame, text='VELOCITY:'),
+                'label': ttk.Label(frame, text='VELOCITY:'),
                 'input': ttk.Combobox(frame,
                                       values=self.RANGE_128,
                                       state='readonly',
@@ -150,7 +152,7 @@ class RuleFormView(tk.Frame):
         inputs['velocity']['input'].current(0)
         return inputs
 
-    def _base_inputs(self, frame, is_for_out_msg=False):
+    def _base_inputs(self, frame):
         inputs = {
             'ch': {
                 'label': ttk.Label(frame, text='CH:'),
