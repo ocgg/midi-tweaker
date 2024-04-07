@@ -57,18 +57,18 @@ class TabView(ttk.Frame):
         match msg.type:
             case 'note_on' | 'note_off':
                 labels['val_1']['label'].config(text='NOTE')
-                labels['val_2']['label'].config(text='VELOCITY')
                 labels['val_1']['value'].config(text=msg.bytes()[1])
+                labels['val_2']['label'].config(text='VELOCITY')
                 labels['val_2']['value'].config(text=msg.bytes()[2])
             case 'control_change':
                 labels['val_1']['label'].config(text='CONTROL')
-                labels['val_2']['label'].config(text='VALUE')
                 labels['val_1']['value'].config(text=msg.bytes()[1])
+                labels['val_2']['label'].config(text='VALUE')
                 labels['val_2']['value'].config(text=msg.bytes()[2])
             case 'pitchwheel':
                 labels['val_1']['label'].config(text='PITCH')
-                labels['val_2']['label'].config(text='')
                 labels['val_1']['value'].config(text=msg.pitch)
+                labels['val_2']['label'].config(text='')
                 labels['val_2']['value'].config(text='')
 
     # PRIVATE #################################################################
@@ -89,15 +89,16 @@ class TabView(ttk.Frame):
         self.midi_labels[source] = {}
 
         for i, name in enumerate(['channel', 'type', 'val_1', 'val_2']):
-            # midi_bar.columnconfigure(i+1, weight=1, uniform='yiiiha')
             container = ttk.Frame(midi_bar)
             container.rowconfigure(0, weight=1)
             self.midi_labels[source][name] = {
                 'label': ttk.Label(container, **self.bold, foreground='gray'),
                 'value': ttk.Label(container, **self.bold)
             }
-            self.midi_labels[source][name]['label'].grid(row=0, column=0, sticky='nse', padx=5)
-            self.midi_labels[source][name]['value'].grid(row=0, column=1, sticky='nsw')
+            self.midi_labels[source][name]['label'].grid(row=0, column=0,
+                                                         sticky='nse', padx=5)
+            self.midi_labels[source][name]['value'].grid(row=0, column=1,
+                                                         sticky='nsw')
             container.grid(row=0, column=i+1, sticky='nsew')
 
         return midi_bar
