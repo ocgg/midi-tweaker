@@ -58,10 +58,8 @@ class RuleFormView(tk.Frame):
 
     def _clear_inputs(self, frame):
         for i, widget in enumerate(frame.winfo_children()):
-            if i <= 3:
-                continue
-
-            widget.grid_remove()
+            if i > 3:
+                widget.destroy()
 
     def _create_note_inputs(self, frame):
         inputs = self._note_inputs(frame)

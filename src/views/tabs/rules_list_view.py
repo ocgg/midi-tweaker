@@ -12,8 +12,8 @@ class RulesListView(tk.Frame):
         self.add_rule_btn.pack_forget()
         for rule in rules:
             rule_frame = tk.Frame(self)
-            tk.Label(rule_frame, text=rule.in_msg).pack(side='left')
+            tk.Label(rule_frame, text=rule.in_attrs).pack(side='left')
             tk.Label(rule_frame, text='➞').pack(side='left')
-            tk.Label(rule_frame, text=rule.out_msg).pack(side='left')
+            tk.Label(rule_frame, text=rule.out_attrs).pack(side='left')
             rule_frame.pack()
         self.add_rule_btn.pack(expand=True)

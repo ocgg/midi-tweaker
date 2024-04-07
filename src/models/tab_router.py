@@ -5,6 +5,9 @@ from .rule import Rule
 
 # Router is the rules controller for one Tab.
 class TabRouter:
+    CHANNEL_VOICE_TYPES = ['note_on', 'note_off', 'control_change',
+                           'program_change', 'channel_pressure', 'pitchwheel']
+
     def __init__(self, tab, port_name):
         self.TAB = tab
         self.midi_in = self._open_midi_in(port_name)
@@ -19,10 +22,14 @@ class TabRouter:
     # MIDI CONNECTIONS ########################################################
 
     def _midi_in_callback(self, msg, data=None):
+        if msg.type not in self.CHANNEL_VOICE_TYPES:
+            text = "Message type not implemented"
+            self.TAB.midi_in_label.configure(text=f"MIDI_IN: {text}")
+
         in_msg = msg.copy()
         # Apply the rules
         for rule in self.rules:
-            msg = rule.translate(msg)
+            msg = rule.translate(msg) if rule.apply_to(msg) else msg
         # Send the message to midi out
         self.midi_out.send(msg)
         # Display the message in the GUI

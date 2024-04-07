@@ -23,12 +23,10 @@ class TabController:
 
     def _bind(self, tab, tab_router):
         # RULE LIST ##########
-        # Add new rule btn
         add_rule_btn = tab.frames['list'].add_rule_btn
         add_rule_btn.config(command=lambda: tab.display_rule_form())
 
         # RULE FORM ##########
-        # Submit btn
         submit_btn = tab.frames['form'].submit_btn
         submit_btn.config(command=lambda:
                           self._on_rule_submit(tab, tab_router))
@@ -66,7 +64,7 @@ class TabController:
     def _clear_inputs(self, in_msg_inputs, out_msg_inputs):
         # removes all key with the same value in both
         for key in list(in_msg_inputs.keys()):
-            if in_msg_inputs[key] == out_msg_inputs[key]:
+            if key in out_msg_inputs and in_msg_inputs[key] == out_msg_inputs[key]:
                 in_msg_inputs.pop(key)
                 out_msg_inputs.pop(key)
         # removes all key with value 'all/keep'
