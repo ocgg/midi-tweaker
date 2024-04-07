@@ -62,9 +62,16 @@ class TabController:
         return inputs
 
     def _clear_inputs(self, in_msg_inputs, out_msg_inputs):
-        # removes all key with the same value in both
+        # Handle note_on and note_off as the same type
+        in_type = in_msg_inputs['type']
+        out_type = out_msg_inputs['type']
+        same_types = in_type == out_type
+        if not same_types and 'note' in in_type and 'note' in out_type:
+            same_types = True
+        # removes all key with the same value in both for ch and type
         for key in list(in_msg_inputs.keys()):
-            if key in out_msg_inputs and in_msg_inputs[key] == out_msg_inputs[key]:
+            has_same_value = in_msg_inputs[key] == out_msg_inputs[key]
+            if not same_types and has_same_value:
                 in_msg_inputs.pop(key)
                 out_msg_inputs.pop(key)
         # removes all key with value 'all/keep'
