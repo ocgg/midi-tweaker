@@ -62,24 +62,31 @@ class TabController:
         return inputs
 
     def _clear_inputs(self, in_msg_inputs, out_msg_inputs):
-        # Handle note_on and note_off as the same type
-        in_type = in_msg_inputs['type']
-        out_type = out_msg_inputs['type']
-        same_types = in_type == out_type
-        if not same_types and 'note' in in_type and 'note' in out_type:
-            same_types = True
+        keys_to_remove = {'in': [], 'out': []}
 
-        # removes all key with the same value
-        for key in list(in_msg_inputs.keys()):
-            has_same_value = in_msg_inputs[key] == out_msg_inputs[key]
-            if not same_types and key in out_msg_inputs and has_same_value:
-                in_msg_inputs.pop(key)
-                out_msg_inputs.pop(key)
+        same_type = in_msg_inputs.get('type') == out_msg_inputs.get('type')
 
-        # removes all key with value 'all/keep'
-        for k, v in list(in_msg_inputs.items()):
-            if v == 'all/keep':
-                in_msg_inputs.pop(k)
-        for k, v in list(out_msg_inputs.items()):
-            if v == 'all/keep':
-                out_msg_inputs.pop(k)
+        for key, value in out_msg_inputs.items():
+            same_val = in_msg_inputs.get(key) == value
+            is_default = value == 'all/keep'
+            in_is_default = in_msg_inputs.get(key) == 'all/keep'
+            same_default_val = is_default and in_is_default
+
+            if same_default_val or (same_type and same_val):
+                keys_to_remove['in'].append(key)
+                keys_to_remove['out'].append(key)
+            # Case when note_on/note_off & same value (out value is useless)
+            elif not same_type and same_val:
+                keys_to_remove['out'].append(key)
+            elif is_default:
+                keys_to_remove['out'].append(key)
+
+        for key in in_msg_inputs:
+            is_default = in_msg_inputs[key] == 'all/keep'
+            if is_default and key not in keys_to_remove['in']:
+                keys_to_remove['in'].append(key)
+
+        for key in keys_to_remove['in']:
+            in_msg_inputs.pop(key)
+        for key in keys_to_remove['out']:
+            out_msg_inputs.pop(key)
