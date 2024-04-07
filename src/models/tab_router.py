@@ -9,7 +9,7 @@ class TabRouter:
                            'program_change', 'channel_pressure', 'pitchwheel']
 
     def __init__(self, tab, port_name):
-        self.TAB = tab
+        self.tab_view = tab
         self.midi_in = self._open_midi_in(port_name)
         self.midi_in.callback = self._midi_in_callback
         self.midi_out = mido.open_output(f'TWEAKED {port_name}', virtual=True)
@@ -23,8 +23,8 @@ class TabRouter:
 
     def _midi_in_callback(self, msg, data=None):
         if msg.type not in self.CHANNEL_VOICE_TYPES:
-            text = "Message type not implemented"
-            self.TAB.midi_in_label.configure(text=f"MIDI_IN: {text}")
+            text = f"Message type not implemented: {msg.type}"
+            self.tab_view.display_midi_msg('MIDI IN', text)
 
         in_msg = msg.copy()
         # Apply the rules
@@ -33,9 +33,9 @@ class TabRouter:
         # Send the message to midi out
         self.midi_out.send(msg)
         # Display the message in the GUI
-        self.TAB.midi_in_label.configure(text=f"MIDI_IN: {str(in_msg)}")
+        self.tab_view.display_midi_msg('in', in_msg)
         # Display the message in the GUI
-        self.TAB.midi_out_label.configure(text=f"MIDI_OUT: {str(msg)}")
+        self.tab_view.display_midi_msg('out', msg)
 
     def _open_midi_in(self, port_name):
         try:
