@@ -26,16 +26,16 @@ class TabRouter:
             text = f"Message type not implemented: {msg.type}"
             self.tab_view.display_midi_msg('MIDI IN', text)
 
-        in_msg = msg.copy()
+        new_msg = msg.copy()
         # Apply the rules
         for rule in self.rules:
-            msg = rule.translate(msg) if rule.apply_to(msg) else msg
-        # Send the message to midi out
-        self.midi_out.send(msg)
-        # Display the message in the GUI
-        self.tab_view.display_midi_msg('in', in_msg)
-        # Display the message in the GUI
-        self.tab_view.display_midi_msg('out', msg)
+            # Rule applies only if it applies with the original message too
+            if rule.apply_to(new_msg) and rule.apply_to(msg):
+                new_msg = rule.translate(new_msg)
+        self.midi_out.send(new_msg)
+        # Display message in the GUI
+        self.tab_view.display_midi_msg('in', msg)
+        self.tab_view.display_midi_msg('out', new_msg)
 
     def _open_midi_in(self, port_name):
         try:
