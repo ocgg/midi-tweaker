@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.ttk as ttk
 
 
 class Root(tk.Tk):  # inherits from tk.Tk
@@ -11,5 +12,8 @@ class Root(tk.Tk):  # inherits from tk.Tk
 
         self.title("MIDI Tweaker")
 
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
+
+        self.style = ttk.Style()
+        # self.style.configure('TLabel', font=('Helvetica', 10))
