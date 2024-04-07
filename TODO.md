@@ -18,3 +18,5 @@
 
 - Refresh marche pas
 - ignorer les ports midi out dans app menu
+
+- widgets ttk partout
