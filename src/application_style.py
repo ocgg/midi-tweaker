@@ -16,13 +16,16 @@ class ApplicationStyle(ttk.Style):
     def __init__(self, root):
         super().__init__(root)
 
+        # LABELS ######################
+        self.configure('bold.TLabel',
+                       **self.FONT_BOLD,)
+        self.configure('big.TLabel',
+                       **self.FONT_BIG,)
+
+        # BUTTONS #####################
         self.configure('big.TButton',
                        padding=(70, 10),
-                       **self.FONT_BOLD,)
-        self.configure('bold.TLabel',
                        **self.FONT_BOLD,)
         self.configure('bold.gray.TLabel',
                        **self.FONT_BOLD,
                        **self.FONT_GRAY,)
-        self.configure('big.TLabel',
-                       **self.FONT_BIG,)
