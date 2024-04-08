@@ -4,11 +4,6 @@ from .rule_form_view import RuleFormView
 
 
 class TabView(ttk.Frame):
-    # STYLES ##########
-    norm = {'font': ('sans-serif', 11)}
-    bold = {'font': ('sans-serif', 11, 'bold')}
-    big_bold = {'font': ('sans-serif', 14, 'bold')}
-
     def __init__(self, main_frame):
         super().__init__(main_frame)
         self.main_frame = main_frame
@@ -83,7 +78,8 @@ class TabView(ttk.Frame):
         midi_bar.columnconfigure(3, minsize=100, weight=4, uniform='a')
         midi_bar.columnconfigure(4, minsize=100, weight=4, uniform='a')
 
-        main_label = ttk.Label(midi_bar, text=source.upper(), **self.big_bold)
+        main_label = ttk.Label(midi_bar, text=source.upper(),
+                               style='big.TLabel')
         main_label.grid(row=0, column=0, sticky='w', padx=7, pady=3)
 
         self.midi_labels[source] = {}
@@ -92,8 +88,8 @@ class TabView(ttk.Frame):
             container = ttk.Frame(midi_bar)
             container.rowconfigure(0, weight=1)
             self.midi_labels[source][name] = {
-                'label': ttk.Label(container, **self.bold, foreground='gray'),
-                'value': ttk.Label(container, **self.bold)
+                'label': ttk.Label(container, style='bold.gray.TLabel'),
+                'value': ttk.Label(container, style='bold.TLabel')
             }
             self.midi_labels[source][name]['label'].grid(row=0, column=0,
                                                          sticky='nse', padx=5)
