@@ -2,11 +2,13 @@ from .root import Root
 from .menu_view import MenuView
 from .home_view import HomeView
 from .tabs_container_view import TabsContainerView
+from ..application_style import ApplicationStyle
 
 
 class ApplicationView:
     def __init__(self):
         self.root = Root()
+        self.style = ApplicationStyle(self.root)
         self.frames = {}
 
         self.app_menu = MenuView(self.root)
