@@ -1,5 +1,7 @@
 # TODO
 
+- petite refacto de clear_inputs dans TabController
+
 - !!!!!! Actuellement les rules s'appliquent A LA SUITE
 - Could have de choisir ça ?
 
@@ -24,3 +26,15 @@
 - ignorer les ports midi out dans app menu
 
 - widgets ttk partout
+
+- class MidiPort sert à rien
+
+- TRIGGERS
+- ajouter un "trigger" à une rule pour l'activer/désactiver
+- donc état is_active d'une rule
+- possible à un trigger d'envoyer des messages custom à n'importe quel port
+
+- FORMULAIRE:
+- Vérifier les inputs
+
+- ECRIRE DES TESTS
