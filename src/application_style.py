@@ -19,6 +19,9 @@ class ApplicationStyle(ttk.Style):
         # LABELS ######################
         self.configure('bold.TLabel',
                        **self.FONT_BOLD,)
+        self.configure('bold.gray.TLabel',
+                       **self.FONT_BOLD,
+                       **self.FONT_GRAY,)
         self.configure('big.TLabel',
                        **self.FONT_BIG,)
 
@@ -26,6 +29,3 @@ class ApplicationStyle(ttk.Style):
         self.configure('big.TButton',
                        padding=(70, 10),
                        **self.FONT_BOLD,)
-        self.configure('bold.gray.TLabel',
-                       **self.FONT_BOLD,
-                       **self.FONT_GRAY,)
