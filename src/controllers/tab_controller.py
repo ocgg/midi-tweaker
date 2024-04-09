@@ -10,7 +10,7 @@ class TabController:
 
         # self.tabs = {
         #   'MIDI port name': {
-        #       'frame': <Tab object>,
+        #       'frame': <TabView object>,
         #       'router': <TabRouter object>
         #   },
         #   ...
