@@ -8,28 +8,38 @@ class TabController:
         self.view = view
         self.tabs_container = view.frames['tabs_container']
 
-        self.tab_routers = {}
+        # self.tabs = {
+        #   'MIDI port name': {
+        #       'tab': <Tab object>,
+        #       'router': <TabRouter object>
+        #   },
+        #   ...
+        self.tabs = {}
 
     def add_tab(self, port_name):
+        self.tabs[port_name] = {}
+
         # Create tab & add it to the view
         tab = TabView(self.tabs_container)
+        self.tabs[port_name]['tab'] = tab
+
         split_name = port_name.split(':')[1]
         self.tabs_container.add_tab(tab, split_name)
         # Create tab router & stock it
-        self.tab_routers[port_name] = TabRouter(tab, port_name)
-        self._bind(tab, self.tab_routers[port_name])
+        self.tabs[port_name]['router'] = TabRouter(tab, port_name)
+        self._bind(self.tabs[port_name])
 
     # BINDINGS ################################################################
 
-    def _bind(self, tab, tab_router):
+    def _bind(self, elts):
         # RULE LIST ##########
-        add_rule_btn = tab.frames['list'].add_rule_btn
-        add_rule_btn.config(command=lambda: tab.display_rule_form())
+        add_rule_btn = elts['tab'].frames['list'].add_rule_btn
+        add_rule_btn.config(command=lambda: elts['tab'].display_rule_form())
 
         # RULE FORM ##########
-        submit_btn = tab.frames['form'].submit_btn
+        submit_btn = elts['tab'].frames['form'].submit_btn
         submit_btn.config(command=lambda:
-                          self._on_rule_submit(tab, tab_router))
+                          self._on_rule_submit(elts['tab'], elts['router']))
 
     # CALLBACKS ###############################################################
 
