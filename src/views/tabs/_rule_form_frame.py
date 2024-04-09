@@ -11,121 +11,85 @@ class RuleFormFrame(ttk.Frame):
     def __init__(self, rule_form_view, source):
         super().__init__(rule_form_view)
 
-        self.form_frames = {'in': {}, 'out': {}}
+        # CONTAINERS ##################
+        self.frames = {}
+        for i, key in enumerate(['title', 'ch', 'type', 'val1', 'val2']):
+            self.frames[key] = ttk.Frame(self)
 
-        # MAIN CONTAINER ##############
+        # TITLE #######################
+        if source == 'in':
+            title = 'When MIDI IN is :'
+        else:
+            title = 'Route it TO :'
+        title_label = ttk.Label(self.frames['title'], text=title,
+                                style='bold.TLabel',
+                                )
+        title_label.grid(row=0, column=0, sticky='ew', pady=10)
+
+        # CHANNEL INPUT ###############
+        self._create_inputs_for(self.frames['ch'], 'CH', self.RANGE_16)
+
+        # TYPE INPUT ##################
+        type_inputs = self._create_inputs_for(self.frames['type'], 'TYPE',
+                                              self.TYPES)
+        # TYPE SELECTION EVENT ########
+        type_inputs['input'].bind(
+            '<<ComboboxSelected>>',
+            lambda event: self._on_type_selected(
+                event, type_inputs['input']))
+
+        # LAYOUT ######################
         self.columnconfigure(0, weight=1)
-        for i in range(5):
+        for i, frame in enumerate(self.frames.values()):
+            # Title frame
+            if i == 0:
+                self.rowconfigure(i, weight=0)
+                frame.grid(row=i)
+                continue
             self.rowconfigure(i, weight=1, uniform='form')
-
-        # CONTAINERS ##################
-        form_frames = self.form_frames[source]
-
-        for i, key in enumerate(['title', 'ch', 'type', 'val1', 'val2']):
-            form_frames[key] = ttk.Frame(self)
-
-        # CONTAINER'S FRAMES ##########
-        # Title
-        title = 'When MIDI IN is :' if source == 'in' else 'Route it to :'
-        title_label = ttk.Label(form_frames['title'], text=title,
-                                style='bold.TLabel')
-        title_label.grid(row=0, column=0, columnspan=2)
-        # Channel input
-        self._create_inputs_for(form_frames['ch'], 'CH', self.RANGE_16)
-        # Type input
-        type_inputs = self._create_inputs_for(form_frames['type'], 'TYPE',
-                                              self.TYPES)
-        # Event on type selection
-        type_inputs['input'].bind(
-            '<<ComboboxSelected>>',
-            lambda event: self._on_type_selected(
-                event, source, type_inputs['input']))
-
-        # LAYOUT ######################
-        for i, frame in enumerate(form_frames.values()):
-            frame.grid(row=i, column=0, sticky='nsew')
-
-    # LAYOUT ##################################################################
-
-    def _build_form_frame(self, source='in'):
-        # MAIN CONTAINER ##############
-        form_frame = ttk.Frame(self)
-        form_frame.columnconfigure(0, weight=1)
-        for i in range(5):
-            form_frame.rowconfigure(i, weight=1, uniform='form')
-
-        # CONTAINERS ##################
-        form_frames = self.form_frames[source]
-
-        for i, key in enumerate(['title', 'ch', 'type', 'val1', 'val2']):
-            form_frames[key] = ttk.Frame(form_frame)
-
-        # CONTAINER'S FRAMES ##########
-        # Title
-        title = 'When MIDI IN is :' if source == 'in' else 'Route it to :'
-        title_label = ttk.Label(form_frames['title'], text=title,
-                                style='bold.TLabel')
-        title_label.grid(row=0, column=0, columnspan=2)
-        # Channel input
-        self._create_inputs_for(form_frames['ch'], 'CH', self.RANGE_16)
-        # Type input
-        type_inputs = self._create_inputs_for(form_frames['type'], 'TYPE',
-                                              self.TYPES)
-        # Event on type selection
-        type_inputs['input'].bind(
-            '<<ComboboxSelected>>',
-            lambda event: self._on_type_selected(
-                event, source, type_inputs['input']))
-
-        # LAYOUT ######################
-        for i, frame in enumerate(form_frames.values()):
-            frame.grid(row=i, column=0, sticky='nsew')
-
-        return form_frame
+            frame.grid(row=i, sticky='nsew')
 
     # INPUT BUILDING ##########################################################
 
-    def _on_type_selected(self, event, source, type_input):
-        self._clear_inputs(source)
+    def _on_type_selected(self, event, type_input):
+        self._clear_inputs()
 
         match type_input.get():
-            case 'note_on':
-                self._create_note_inputs(source)
-            case 'note_off':
-                self._create_note_inputs(source)
+            case 'note_on' | 'note_off':
+                self._create_note_inputs()
             case 'control_change':
-                self._create_control_inputs(source)
+                self._create_control_inputs()
             case 'pitchwheel':
-                self._create_pitch_wheel_inputs(source)
+                self._create_pitch_wheel_inputs()
 
-    def _clear_inputs(self, source):
-        val_1_inputs = self.form_frames[source]['val1'].winfo_children()
-        val_2_inputs = self.form_frames[source]['val2'].winfo_children()
+    def _clear_inputs(self):
+        val_1_inputs = self.frames['val1'].winfo_children()
+        val_2_inputs = self.frames['val2'].winfo_children()
         for widget in [*val_1_inputs, *val_2_inputs]:
             widget.destroy()
 
-    def _create_note_inputs(self, source):
-        note_container = self.form_frames[source]['val1']
+    def _create_note_inputs(self):
+        note_container = self.frames['val1']
         self._create_inputs_for(note_container,
                                 'NOTE',
                                 self.RANGE_128)
-        velo_container = self.form_frames[source]['val2']
+        velo_container = self.frames['val2']
         self._create_inputs_for(velo_container,
                                 'VELOCITY',
                                 self.RANGE_128)
 
-    def _create_control_inputs(self, source):
-        control_container = self.form_frames[source]['val1']
+    def _create_control_inputs(self):
+        control_container = self.frames['val1']
         self._create_inputs_for(control_container,
                                 'CONTROL',
                                 self.RANGE_128)
-        value_container = self.form_frames[source]['val2']
+        value_container = self.frames['val2']
         self._create_inputs_for(value_container,
                                 'VALUE',
                                 self.RANGE_128)
 
-    def _create_pitch_wheel_inputs(self, source):
-        pitch_container = self.form_frames[source]['val1']
+    def _create_pitch_wheel_inputs(self):
+        pitch_container = self.frames['val1']
         self._create_inputs_for(pitch_container,
                                 'PITCH',
                                 self.RANGE_128)
