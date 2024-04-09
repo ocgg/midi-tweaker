@@ -10,7 +10,7 @@ class TabController:
 
         # self.tabs = {
         #   'MIDI port name': {
-        #       'frame': <TabView object>,
+        #       'view': <TabView object>,
         #       'router': <TabRouter object>
         #   },
         #   ...
@@ -21,7 +21,7 @@ class TabController:
 
         # Create tab & add it to the view
         tab = TabView(self.tabs_container)
-        self.tabs[port_name]['frame'] = tab
+        self.tabs[port_name]['view'] = tab
 
         split_name = port_name.split(':')[1]
         self.tabs_container.add_tab(tab, split_name)
@@ -33,13 +33,13 @@ class TabController:
 
     def _bind(self, tab):
         # RULE LIST ##########
-        add_rule_btn = tab['frame'].frames['list'].add_rule_btn
-        add_rule_btn.config(command=lambda: tab['frame'].display_rule_form())
+        add_rule_btn = tab['view'].frames['list'].add_rule_btn
+        add_rule_btn.config(command=lambda: tab['view'].display_rule_form())
 
         # RULE FORM ##########
-        submit_btn = tab['frame'].frames['form'].submit_btn
+        submit_btn = tab['view'].frames['form'].submit_btn
         submit_btn.config(command=lambda:
-                          self._on_rule_submit(tab['frame'], tab['router']))
+                          self._on_rule_submit(tab['view'], tab['router']))
 
     # CALLBACKS ###############################################################
 
