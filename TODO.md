@@ -38,3 +38,5 @@
 - Vérifier les inputs
 
 - ECRIRE DES TESTS
+
+- Shortcuts
