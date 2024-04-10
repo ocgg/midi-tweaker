@@ -51,10 +51,11 @@ class ApplicationStyle(ttk.Style):
 
         # FONT ########################
 
-        FONT_NORMAL = {'font': (self.MAIN_FF, 11)}
-        FONT_BOLD = {'font': (self.MAIN_FF, 11, 'bold')}
-        FONT_BIG = {'font': (self.MAIN_FF, 14, 'bold')}
-        FONT_SMALL = {'font': (self.MAIN_FF, 9)}
+        FONT_NORMAL = {'font': (self.MAIN_FF, 10)}
+        FONT_BOLD = {'font': (self.MAIN_FF, 10, 'bold')}
+        FONT_BIG = {'font': (self.MAIN_FF, 13, 'bold')}
+        FONT_VERY_BIG = {'font': (self.MAIN_FF, 15)}
+        FONT_SMALL = {'font': (self.MAIN_FF, 8)}
 
         # COLORS ######################
 
@@ -91,6 +92,11 @@ class ApplicationStyle(ttk.Style):
             'learn.TButton': {
                 **FONT_SMALL,
                 **FG_GRAY,
+            },
+            'refresh.TButton': {
+                'padding': 0,
+                **FONT_VERY_BIG,
+                'width': 2,
             },
 
             # SEPARATORS ##############
