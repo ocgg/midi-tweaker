@@ -48,21 +48,21 @@ class TabView(ttk.Frame):
         labels = self.midi_labels[source]
         msg_type = msg.type.replace('_', ' ')
         labels['type']['value'].config(text=msg_type)
-        labels['channel']['value'].config(text=msg.channel)
+        labels['channel']['value'].config(text=msg.channel+1)
         match msg.type:
             case 'note_on' | 'note_off':
                 labels['val_1']['label'].config(text='NOTE')
-                labels['val_1']['value'].config(text=msg.bytes()[1])
+                labels['val_1']['value'].config(text=msg.bytes()[1]+1)
                 labels['val_2']['label'].config(text='VELOCITY')
-                labels['val_2']['value'].config(text=msg.bytes()[2])
+                labels['val_2']['value'].config(text=msg.bytes()[2]+1)
             case 'control_change':
                 labels['val_1']['label'].config(text='CONTROL')
-                labels['val_1']['value'].config(text=msg.bytes()[1])
+                labels['val_1']['value'].config(text=msg.bytes()[1]+1)
                 labels['val_2']['label'].config(text='VALUE')
-                labels['val_2']['value'].config(text=msg.bytes()[2])
+                labels['val_2']['value'].config(text=msg.bytes()[2]+1)
             case 'pitchwheel':
                 labels['val_1']['label'].config(text='PITCH')
-                labels['val_1']['value'].config(text=msg.pitch)
+                labels['val_1']['value'].config(text=msg.pitch+1)
                 labels['val_2']['label'].config(text='')
                 labels['val_2']['value'].config(text='')
 
@@ -71,12 +71,11 @@ class TabView(ttk.Frame):
     def _create_midi_bar(self, source):
         midi_bar = ttk.Frame(self)
         midi_bar.rowconfigure(0, weight=1)
-        midi_bar.columnconfigure(0, minsize=60)
-        midi_bar.columnconfigure(0, minsize=50,  weight=2, uniform='a')
-        midi_bar.columnconfigure(1, minsize=50,  weight=3, uniform='a')
-        midi_bar.columnconfigure(2, minsize=180, weight=5, uniform='a')
-        midi_bar.columnconfigure(3, minsize=100, weight=4, uniform='a')
-        midi_bar.columnconfigure(4, minsize=100, weight=4, uniform='a')
+        midi_bar.columnconfigure(0, minsize=50)
+        midi_bar.columnconfigure(1, minsize=50)
+        midi_bar.columnconfigure(2, minsize=160)
+        midi_bar.columnconfigure(3, minsize=100)
+        midi_bar.columnconfigure(4, minsize=100)
 
         main_label = ttk.Label(midi_bar, text=source.upper(),
                                style='big.TLabel')
@@ -87,14 +86,16 @@ class TabView(ttk.Frame):
         for i, name in enumerate(['channel', 'type', 'val_1', 'val_2']):
             container = ttk.Frame(midi_bar)
             container.rowconfigure(0, weight=1)
+            # container.columnconfigure(0, minsize=50)
+            # container.columnconfigure(1, minsize=100)
             self.midi_labels[source][name] = {
                 'label': ttk.Label(container, style='bold.gray.TLabel'),
                 'value': ttk.Label(container, style='bold.TLabel')
             }
             self.midi_labels[source][name]['label'].grid(row=0, column=0,
-                                                         sticky='nse', padx=5)
+                                                         sticky='w', padx=5)
             self.midi_labels[source][name]['value'].grid(row=0, column=1,
-                                                         sticky='nsw')
-            container.grid(row=0, column=i+1, sticky='nsew')
+                                                         sticky='w')
+            container.grid(row=0, column=i+1, sticky='ew')
 
         return midi_bar
