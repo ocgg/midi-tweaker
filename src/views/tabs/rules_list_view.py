@@ -62,8 +62,8 @@ class RulesListView(ttk.Frame):
         out_container = ttk.Frame(rules_frame)
         separator = ttk.Label(rules_frame, text='⮕', style='bold.gray.TLabel')
 
-        in_elts = self._display_rule_attrs(in_container, rule.in_attrs)
-        out_elts = self._display_rule_attrs(out_container, rule.out_attrs)
+        in_elts = self._create_rule_elements(in_container, rule.in_attrs)
+        out_elts = self._create_rule_elements(out_container, rule.out_attrs)
 
         for i, widget in enumerate(in_elts):
             widget.pack(side='left', padx=(0, 10))
@@ -74,66 +74,60 @@ class RulesListView(ttk.Frame):
                 'separator': separator,
                 'out_rule': out_container}
 
-    def _display_rule_attrs(self, frame, attrs):
+    def _create_rule_elements(self, frame, attrs):
         if not attrs:
             label = ttk.Label(frame, text='ALL', style='bold.TLabel')
             return [label]
+
+        MIDI_NBRS = ['note', 'control', 'pitch']
+        MIDI_VALUES = ['velocity', 'value']
 
         labels_containers = []
         keys = attrs.keys()
         items = attrs.items()
         has_type = 'type' in keys
-        has_val1 = any([k in ['note', 'control', 'pitch'] for k in keys])
-        has_val2 = any([k in ['velocity', 'value'] for k in keys])
+        has_val1 = any([k in MIDI_NBRS for k in keys])
+        has_val2 = any([k in MIDI_VALUES for k in keys])
 
         # Channel
         if 'channel' in keys:
-            container = ttk.Frame(frame)
             value = attrs['channel']
-            wl = ttk.Label(container, text='CH', style='bold.TLabel')
-            wv = ttk.Label(container, text=value+1, style='bold.gray.TLabel')
-            wl.pack(side='left')
-            wv.pack(side='left')
+            container = self._create_attribute_container(frame, 'CH', value+1)
             labels_containers.append(container)
         # Type & val 1
         if has_type and not has_val1:
-            container = ttk.Frame(frame)
-            type_name = self._change_attr_name(attrs['type'])
-            wl = ttk.Label(container, text=type_name, style='bold.TLabel')
-            wl.pack()
+            name = self._change_attr_name(attrs['type'])
+            container = self._create_attribute_container(frame, name)
             labels_containers.append(container)
         elif has_type and has_val1:
-            container = ttk.Frame(frame)
             name = self._change_attr_name(attrs['type'])
-            val = [v for k, v in items if k in ['note', 'control', 'pitch']][0]
-            wl = ttk.Label(container, text=name, style='bold.TLabel')
-            wv = ttk.Label(container, text=val+1, style='bold.gray.TLabel')
-            wl.pack(side='left')
-            wv.pack(side='left')
+            value = next((v for k, v in items if k in MIDI_NBRS))
+            container = self._create_attribute_container(frame, name, value+1)
             labels_containers.append(container)
         elif not has_type and has_val1:
-            container = ttk.Frame(frame)
-            attr = [k for k in keys if k in ['note', 'control', 'pitch']][0]
+            attr = next((k for k in keys if k in MIDI_NBRS))
             name = self._change_attr_name(attr)
-            val1 = [v for k, v in items if k in ['note', 'control', 'pitch']][0]
-            wl = ttk.Label(container, text=name, style='bold.TLabel')
-            wv = ttk.Label(container, text=val1+1, style='bold.gray.TLabel')
-            wl.pack(side='left')
-            wv.pack(side='left')
+            value = next((v for k, v in items if k in MIDI_NBRS))
+            container = self._create_attribute_container(frame, name, value+1)
             labels_containers.append(container)
         # Val 2
         if has_val2:
-            container = ttk.Frame(frame)
-            attr = [k for k in keys if k in ['velocity', 'value']][0]
+            attr = next((k for k in keys if k in MIDI_VALUES))
             name = self._change_attr_name(attr)
-            val2 = [v for k, v in items if k in ['velocity', 'value']][0]
-            wl = ttk.Label(container, text=name, style='bold.TLabel')
-            wv = ttk.Label(container, text=val2+1, style='bold.gray.TLabel')
-            wl.pack(side='left')
-            wv.pack(side='left')
+            value = next((v for k, v in items if k in MIDI_VALUES))
+            container = self._create_attribute_container(frame, name, value+1)
             labels_containers.append(container)
 
         return labels_containers
+
+    def _create_attribute_container(self, frame, name, value=None):
+        container = ttk.Frame(frame)
+        wl = ttk.Label(container, text=name, style='bold.TLabel')
+        wl.pack(side='left')
+        if value:
+            wv = ttk.Label(container, text=value, style='bold.gray.TLabel')
+            wv.pack(side='left')
+        return container
 
     def _change_attr_name(self, attr_name):
         match attr_name:
@@ -158,5 +152,6 @@ class RulesListView(ttk.Frame):
                 return 'velo'
             case 'value':
                 return 'val'
+            # Not handled yet case
             case _:
                 return attr_name.upper()
