@@ -1,37 +1,41 @@
 # TODO
 
-- petite refacto de clear_inputs dans TabController
+## PRIORITE
 
-- ajouter 'learn' dans le formulaire
+- faire marcher 'learn'
 
-- ne pas pouvoir ouvrir 2 fois le même port (quoique?)
-- choisir port de sortie
 - fermer un onglet
+- Renommer un onglet
 
-- annuler création rule
-- changer l'ordre des rules (glisser/déposer)
-- modifier rule
-- supprimer
+- créer un port out virtuel
 
-- plus joli
+## PETITES REFACTO
 
-- pouvoir choisir les inputs de in_msg dans les inputs de out_msg
+- ttk partout
+- MidiPort sert à rien
+- ApplicationModel non plus...
 
-- Refresh marche pas
-- ignorer les ports midi out dans app menu
-
-- widgets ttk partout
-
-- class MidiPort sert à rien
-
-- TRIGGERS
-- ajouter un "trigger" à une rule pour l'activer/désactiver
-- donc état is_active d'une rule
-- possible à un trigger d'envoyer des messages custom à n'importe quel port
+## DIVERS
 
 - FORMULAIRE:
 - Vérifier les inputs
 
 - ECRIRE DES TESTS
 
-- Shortcuts
+- Shortcuts clavier
+
+- choisir d'afficher ou non les MIDI IN & OUT
+
+## PLUS TARD (RULES FEATURES)
+
+- annuler création rule
+- changer l'ordre des rules (glisser/déposer)
+- modifier rule
+- supprimer
+
+- pouvoir choisir les inputs de in_msg dans les inputs de out_msg
+
+- TRIGGERS
+- ajouter un "trigger" à une rule pour l'activer/désactiver
+- donc état is_active d'une rule
+- possible à un trigger d'envoyer des messages custom à n'importe quel port
