@@ -13,7 +13,9 @@ class RuleFormFrame(ttk.Frame):
 
         # CONTAINERS ##################
         self.frames = {}
-        for i, key in enumerate(['title', 'ch', 'type', 'val1', 'val2']):
+
+        containers = ['title', 'ch', 'type', 'val1', 'val2', 'learn']
+        for i, key in enumerate(containers):
             self.frames[key] = ttk.Frame(self)
 
         # TITLE #######################
@@ -38,6 +40,13 @@ class RuleFormFrame(ttk.Frame):
             lambda event: self._on_type_selected(event, type_inputs['input'])
         )
 
+        # LEARN BUTTON ################
+        self.frames['learn'].rowconfigure(0, weight=1)
+        self.frames['learn'].columnconfigure(0, weight=1)
+        learn_btn = ttk.Button(self.frames['learn'], text='LEARN')
+        learn_btn.config(style='learn.TButton')
+        learn_btn.grid(row=0, column=0)
+
         # LAYOUT ######################
         self.columnconfigure(0, weight=1)
 
@@ -47,8 +56,8 @@ class RuleFormFrame(ttk.Frame):
 
         # Inputs frames
         for i, frame in enumerate(self.frames.values()):
-            # self.rowconfigure(i+1, uniform='form', weight=1)
-            frame.grid(row=i+1, sticky='ew', pady=(0, 10))
+            self.rowconfigure(i+1, minsize=45)
+            frame.grid(row=i+1, sticky='ew')
 
     # INPUT BUILDING ##########################################################
 
@@ -80,7 +89,7 @@ class RuleFormFrame(ttk.Frame):
         elements = {
             'label': ttk.Label(
                 container, text=text,
-                style='bold.TLabel',
+                style='bold.gray.TLabel',
             ),
             'input': ttk.Combobox(container, values=values,
                                   state='readonly',

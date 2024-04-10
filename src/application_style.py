@@ -53,6 +53,7 @@ class ApplicationStyle(ttk.Style):
 
         FONT_BOLD = {'font': (self.MAIN_FF, 11, 'bold')}
         FONT_BIG = {'font': (self.MAIN_FF, 14, 'bold')}
+        FONT_SMALL = {'font': (self.MAIN_FF, 8)}
 
         # COLORS ######################
 
@@ -78,5 +79,9 @@ class ApplicationStyle(ttk.Style):
             'big.TButton': {
                 'padding': (70, 10),
                 **FONT_BOLD,
+            },
+            'learn.TButton': {
+                **FONT_SMALL,
+                **FG_GRAY,
             },
         }
