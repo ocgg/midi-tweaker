@@ -51,9 +51,10 @@ class ApplicationStyle(ttk.Style):
 
         # FONT ########################
 
+        FONT_NORMAL = {'font': (self.MAIN_FF, 11)}
         FONT_BOLD = {'font': (self.MAIN_FF, 11, 'bold')}
         FONT_BIG = {'font': (self.MAIN_FF, 14, 'bold')}
-        FONT_SMALL = {'font': (self.MAIN_FF, 8)}
+        FONT_SMALL = {'font': (self.MAIN_FF, 9)}
 
         # COLORS ######################
 
@@ -63,6 +64,13 @@ class ApplicationStyle(ttk.Style):
 
             # LABELS ##################
 
+            'TLabel': {
+                **FONT_NORMAL,
+            },
+            'small.TLabel': {
+                **FONT_SMALL,
+                **FG_GRAY
+            },
             'bold.TLabel': {
                 **FONT_BOLD,
             },
