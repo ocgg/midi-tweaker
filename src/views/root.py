@@ -6,7 +6,8 @@ class Root(tk.Tk):  # inherits from tk.Tk
         # Call parent class constructor to have its behavior & state under self
         super().__init__()
 
-        self.geometry("640x480")
+        # Window size : 800x600, position : 100, 100
+        self.geometry("800x600+100+100")
         self.minsize(width=200, height=100)
 
         self.title("MIDI Tweaker")
