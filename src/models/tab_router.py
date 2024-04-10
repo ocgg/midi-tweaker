@@ -10,9 +10,11 @@ class TabRouter:
 
     def __init__(self, tab, port_name):
         self.tab_view = tab
-        self.midi_in = self._open_midi_in(port_name)
-        self.midi_in.callback = self._midi_in_callback
-        self.midi_out = mido.open_output(f'TWEAKED {port_name}', virtual=True)
+        self.midi_in = None
+        self.midi_out = None
+        # self.midi_in = self.set_input_port(port_name)
+        # self.midi_in.callback = self._midi_in_callback
+        # self.midi_out = mido.open_output(f'TWEAKED {port_name}', virtual=True)
         self.rules = []
 
     def add_rule(self, in_msg_inputs, out_msg_inputs):
@@ -32,13 +34,37 @@ class TabRouter:
             # Rule applies only if it applies with the original message too
             if rule.apply_to(new_msg) and rule.apply_to(msg):
                 new_msg = rule.translate(new_msg)
-        self.midi_out.send(new_msg)
-        # Display message in the GUI
-        self.tab_view.display_midi_msg('in', msg)
-        self.tab_view.display_midi_msg('out', new_msg)
 
-    def _open_midi_in(self, port_name):
+        if self.midi_out:
+            self.midi_out.send(new_msg)
+            self.tab_view.display_midi_msg('out', new_msg)
+        self.tab_view.display_midi_msg('in', msg)
+
+    def get_midi_ports(self, source):
+        if source == 'in':
+            return mido.get_input_names()
+        elif source == 'out':
+            return mido.get_output_names()
+
+    def set_midi_port(self, event, source, port_name):
+        if source == 'in':
+            self._set_input_port(port_name)
+        elif source == 'out':
+            self._set_output_port(port_name)
+
+    def _set_input_port(self, port_name):
+        if self.midi_in:
+            self.midi_in.close()
         try:
-            return mido.open_input(port_name)
+            self.midi_in = mido.open_input(port_name)
+            self.midi_in.callback = self._midi_in_callback
         except IOError:
             messagebox.showerror("Error", "MIDI port not found")
+
+    def _set_output_port(self, port_name):
+        if self.midi_out:
+            self.midi_out.close()
+        try:
+            self.midi_out = mido.open_output(port_name)
+        except IOError:
+            messagebox.showerror("Error", f"MIDI port not found: {port_name}")

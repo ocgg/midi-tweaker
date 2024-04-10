@@ -16,42 +16,69 @@ class TabController:
         #   ...
         self.tabs = {}
 
-    def add_tab(self, port_name):
-        self.tabs[port_name] = {}
+    def add_tab(self, tab_name):
+        self.tabs[tab_name] = {}
 
         # Create tab & add it to the view
         tab = TabView(self.tabs_container)
-        self.tabs[port_name]['view'] = tab
+        self.tabs[tab_name]['view'] = tab
+        self.tabs_container.add_tab(tab, tab_name)
 
-        split_name = port_name.split(':')[1]
-        self.tabs_container.add_tab(tab, split_name)
         # Create tab router & stock it
-        self.tabs[port_name]['router'] = TabRouter(tab, port_name)
-        self._bind(self.tabs[port_name])
+        self.tabs[tab_name]['router'] = TabRouter(tab, tab_name)
+        self._bind(self.tabs[tab_name])
 
     # BINDINGS ################################################################
 
     def _bind(self, tab):
-        # RULE LIST ##########
-        add_rule_btn = tab['view'].frames['list'].add_rule_btn
-        add_rule_btn.config(command=lambda: tab['view'].display_rule_form())
+        tab_view = tab['view']
+        tab_router = tab['router']
 
-        # RULE FORM ##########
-        submit_btn = tab['view'].frames['form'].submit_btn
+        # MIDI BARS ###################
+        self._bind_midi_bar(tab, 'in')
+        self._bind_midi_bar(tab, 'out')
+
+        # RULE LIST ###################
+        add_rule_btn = tab_view.frames['list'].add_rule_btn
+        add_rule_btn.config(command=lambda: tab_view.display_rule_form())
+
+        # RULE FORM ###################
+        submit_btn = tab_view.frames['form'].submit_btn
         submit_btn.config(command=lambda:
-                          self._on_rule_submit(tab['view'], tab['router']))
+                          self._on_rule_submit(tab_view, tab_router))
+
+    def _bind_midi_bar(self, tab, source):
+        tab_view = tab['view']
+        tab_router = tab['router']
+        # Set midi ports list for comboboxes
+        midi_ports = tab_router.get_midi_ports(source)
+        combobox = tab_view.midi_bars[source]['ports']['combobox']
+        combobox['values'] += tuple(midi_ports)
+        combobox.bind(
+            '<<ComboboxSelected>>',
+            lambda event:
+                tab_router.set_midi_port(event, source, combobox.get())
+        )
+        # Refresh button
+        refresh_btn = tab_view.midi_bars[source]['ports']['refresh']
+        refresh_btn.config(command=lambda: self._on_refresh(tab, source))
 
     # CALLBACKS ###############################################################
 
-    def _on_rule_submit(self, tab, tab_router):
-        in_form_data = tab.frames['form'].in_form.get_form_state()
-        out_form_data = tab.frames['form'].out_form.get_form_state()
+    def _on_refresh(self, tab, source):
+        print
+        midi_ports = tab['router'].get_midi_ports(source)
+        tab['view'].update_midi_ports(source, midi_ports)
+
+    def _on_rule_submit(self, tab_view, tab_router):
+        in_form_data = tab_view.frames['form'].in_form.get_form_state()
+        out_form_data = tab_view.frames['form'].out_form.get_form_state()
         self._clear_inputs(in_form_data, out_form_data)
 
         tab_router.add_rule(in_form_data, out_form_data)
 
-        tab.frames['list'].update_list(tab_router.rules)
-        tab.display_rules_list()
+        tab_view.frames['list'].update_list(tab_router.rules)
+        tab_view.display_rules_list()
 
     def _clear_inputs(self, in_form_data, out_form_data):
         # Removes useless keys in both form_data

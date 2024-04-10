@@ -9,7 +9,7 @@ class TabView(ttk.Frame):
         self.main_frame = main_frame
 
         self.frames = {}
-        self.midi_labels = {}
+        self.midi_bars = {'in': {}, 'out': {}}
 
         self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -21,12 +21,6 @@ class TabView(ttk.Frame):
         self.frames['list'] = RulesListView(self)
         # MIDI OUT bar
         midi_out_bar = self._create_midi_bar('out')
-
-        # Init
-        self.midi_labels['in']['channel']['label'].config(text='CH')
-        self.midi_labels['in']['type']['label'].config(text='TYPE')
-        self.midi_labels['out']['channel']['label'].config(text='CH')
-        self.midi_labels['out']['type']['label'].config(text='TYPE')
 
         # LAYOUT
         midi_in_bar.grid(row=0, sticky='ew')
@@ -45,9 +39,11 @@ class TabView(ttk.Frame):
         self.frames['list'].lift()
 
     def display_midi_msg(self, source, msg):
-        labels = self.midi_labels[source]
+        labels = self.midi_bars[source]
         msg_type = msg.type.replace('_', ' ')
+        labels['type']['label'].config(text='TYPE')
         labels['type']['value'].config(text=msg_type)
+        labels['channel']['label'].config(text='CH')
         labels['channel']['value'].config(text=msg.channel+1)
         match msg.type:
             case 'note_on' | 'note_off':
@@ -66,36 +62,66 @@ class TabView(ttk.Frame):
                 labels['val_2']['label'].config(text='')
                 labels['val_2']['value'].config(text='')
 
+    def update_midi_ports(self, source, ports):
+        combobox = self.midi_bars[source]['ports']['combobox']
+        combobox['values'] = ['Select a MIDI port'] + ports
+        combobox.current(0)
+
     # PRIVATE #################################################################
 
     def _create_midi_bar(self, source):
-        midi_bar = ttk.Frame(self)
-        midi_bar.rowconfigure(0, weight=1)
-        midi_bar.columnconfigure(0, minsize=50)
-        midi_bar.columnconfigure(1, minsize=50)
-        midi_bar.columnconfigure(2, minsize=160)
-        midi_bar.columnconfigure(3, minsize=100)
-        midi_bar.columnconfigure(4, minsize=100)
+        midi_bar_frame = ttk.Frame(self)
+        midi_bar_frame.rowconfigure(0, weight=1)
+        midi_bar_frame.columnconfigure(0, minsize=55)
+        midi_bar_frame.columnconfigure(1, minsize=100)
+        midi_bar_frame.columnconfigure(2, minsize=50)
+        midi_bar_frame.columnconfigure(3, minsize=150)
+        midi_bar_frame.columnconfigure(4, minsize=100)
+        midi_bar_frame.columnconfigure(5, minsize=100)
 
-        main_label = ttk.Label(midi_bar, text=source.upper(),
-                               style='big.TLabel')
-        main_label.grid(row=0, column=0, sticky='w', padx=7, pady=3)
+        midi_bar_data = self.midi_bars[source]
 
-        self.midi_labels[source] = {}
+        # 'IN' or 'OUT' label
+        main_label = ttk.Label(midi_bar_frame, text=source.upper(),
+                               style='big.TLabel', anchor='center')
 
-        for i, name in enumerate(['channel', 'type', 'val_1', 'val_2']):
-            container = ttk.Frame(midi_bar)
+        # Port choice
+        port_choice_container = ttk.Frame(midi_bar_frame)
+        port_choice = ttk.Combobox(port_choice_container, state='readonly')
+        port_choice['values'] = ['Select a MIDI port']
+        port_choice.current(0)
+        refresh_btn = ttk.Button(port_choice_container, text='↺',
+                                 style='refresh.TButton')
+        midi_bar_data['ports'] = {
+            'combobox': port_choice,
+            'refresh': refresh_btn
+        }
+        port_choice.grid(row=0, column=0, sticky='ew')
+        refresh_btn.grid(row=0, column=1, sticky='ew')
+
+        # Labels for message data
+        MIDI_DATAS = ['channel', 'type', 'val_1', 'val_2']
+
+        for i, name in enumerate(MIDI_DATAS):
+            container = ttk.Frame(midi_bar_frame)
             container.rowconfigure(0, weight=1)
-            # container.columnconfigure(0, minsize=50)
-            # container.columnconfigure(1, minsize=100)
-            self.midi_labels[source][name] = {
-                'label': ttk.Label(container, style='bold.gray.TLabel'),
-                'value': ttk.Label(container, style='bold.TLabel')
-            }
-            self.midi_labels[source][name]['label'].grid(row=0, column=0,
-                                                         sticky='w', padx=5)
-            self.midi_labels[source][name]['value'].grid(row=0, column=1,
-                                                         sticky='w')
-            container.grid(row=0, column=i+1, sticky='ew')
+            container.columnconfigure(1, weight=1)
 
-        return midi_bar
+            midi_bar_data[name] = {
+                'container': container,
+                'label': ttk.Label(container, style='bold.TLabel'),
+                'value': ttk.Label(container, style='bold.gray.TLabel')
+            }
+            midi_bar_data[name]['label'].grid(row=0, column=0,
+                                              sticky='w', padx=(0, 3))
+            midi_bar_data[name]['value'].grid(row=0, column=1,
+                                              sticky='w')
+
+        # Layout for midi_bar_frame content
+        main_label.grid(row=0, column=0, sticky='ew', pady=3)
+        port_choice_container.grid(row=0, column=1, sticky='ew', padx=(0, 5))
+        for i, name in enumerate(MIDI_DATAS):
+            container = midi_bar_data[name]['container']
+            container.grid(row=0, column=i+2, sticky='ew')
+
+        return midi_bar_frame
