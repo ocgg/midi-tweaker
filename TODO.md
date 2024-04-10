@@ -2,11 +2,6 @@
 
 - petite refacto de clear_inputs dans TabController
 
-- !!!!!! Actuellement les rules s'appliquent A LA SUITE
-- Could have de choisir ça ?
-
-- !!!!!!
-
 - ajouter 'learn' dans le formulaire
 
 - ne pas pouvoir ouvrir 2 fois le même port (quoique?)
