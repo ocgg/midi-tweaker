@@ -7,54 +7,79 @@ class RulesListView(ttk.Frame):
 
         self.widgets = {}
 
-        self.widgets['rules'] = ttk.Frame(self)
+        # Rules container
+        self.rules_frame = ttk.Frame(self)
 
-        self.widgets['add_rule_btn'] = ttk.Button(self, text='Add Rule',
+        # Add Rule button
+        self.add_rule_btn = ttk.Button(self, text='Add Rule',
                                                   style='big.TButton')
+        # Note for user
         note_txt = ('Note: rules apply one by one in order. One rule is '
                     'skipped if it cannot apply to the message being routed '
                     'AND to the original MIDI IN message.')
-        self.widgets['note'] = ttk.Label(self, text=note_txt, wraplength=450,
-                                         justify='center',
-                                         style='small.TLabel')
+        self.note_label = ttk.Label(self, text=note_txt, wraplength=450,
+                                    justify='center',
+                                    style='small.TLabel')
 
-        self.widgets['rules'].pack(expand=True)
-        self.widgets['add_rule_btn'].pack(expand=True)
-        self.widgets['note'].pack(side='bottom')
+        # LAYOUT ######################
+        self.rules_frame.columnconfigure(0, weight=1, uniform='rule')
+        self.rules_frame.columnconfigure(1, weight=0)
+        self.rules_frame.columnconfigure(2, weight=1, uniform='rule')
+
+        self._packer()
+
+    # PACKER ##################################################################
+
+    def _packer(self):
+        self.rules_frame.pack(fill='x', padx=70)
+        self.note_label.pack(side='bottom')
+        self.add_rule_btn.pack(side='bottom', pady=(0, 15))
 
     def update_list(self, rules):
-        for widget in self.widgets['rules'].winfo_children():
+        # Clear list
+        self.add_rule_btn.pack_forget()
+        self.note_label.pack_forget()
+        self.rules_frame.pack_forget()
+        for widget in self.rules_frame.winfo_children():
             widget.destroy()
-        self.widgets['add_rule_btn'].pack_forget()
-        self.widgets['note'].pack_forget()
-        for rule in rules:
-            self._display_rule(rule)
-        self.widgets['add_rule_btn'].pack(expand=True)
-        self.widgets['note'].pack(side='bottom')
+        # Rebuild list
+        for i, rule in enumerate(rules):
+            rule_elts = self._build_rule(rule)
+            rule_elts['in_rule'].grid(row=i*2, column=0, sticky='e')
+            rule_elts['separator'].grid(row=i*2, column=1, pady=8)
+            rule_elts['out_rule'].grid(row=i*2, column=2, sticky='w')
+            between_rules = ttk.Frame(self.rules_frame, style='light.TFrame')
+            between_rules.grid(row=i*2+1, column=0, columnspan=3, sticky='ew')
+
+        self._packer()
 
     # PRIVATE #################################################################
 
-    def _display_rule(self, rule):
-        rule_frame = ttk.Frame(self.widgets['rules'])
+    def _build_rule(self, rule):
+        rules_frame = self.rules_frame
 
-        in_widgets = self._display_rule_attrs(rule_frame, rule.in_attrs)
-        separator = ttk.Label(rule_frame, text='➞')
-        out_widgets = self._display_rule_attrs(rule_frame, rule.out_attrs)
+        in_container = ttk.Frame(rules_frame)
+        out_container = ttk.Frame(rules_frame)
+        separator = ttk.Label(rules_frame, text='⮕', style='bold.gray.TLabel')
 
-        for i, widget in enumerate(in_widgets):
-            widget.grid(row=0, column=i)
-        separator.grid(row=0, column=len(in_widgets))
-        for i, widget in enumerate(out_widgets):
-            widget.grid(row=0, column=i+len(in_widgets)+1)
+        in_elts = self._display_rule_attrs(in_container, rule.in_attrs)
+        out_elts = self._display_rule_attrs(out_container, rule.out_attrs)
 
-        rule_frame.pack()
+        for i, widget in enumerate(in_elts):
+            widget.pack(side='left', padx=(0, 10))
+        for i, widget in enumerate(out_elts):
+            widget.pack(side='left', padx=(10, 0))
+
+        return {'in_rule': in_container,
+                'separator': separator,
+                'out_rule': out_container}
 
     def _display_rule_attrs(self, frame, attrs):
         if not attrs:
             label = ttk.Label(frame, text='ALL', style='bold.TLabel')
             return [label]
 
-        labels = []
+        labels_containers = []
         keys = attrs.keys()
         items = attrs.items()
         has_type = 'type' in keys
@@ -63,38 +88,52 @@ class RulesListView(ttk.Frame):
 
         # Channel
         if 'channel' in keys:
+            container = ttk.Frame(frame)
             value = attrs['channel']
-            wl = ttk.Label(frame, text='CH', style='bold.gray.TLabel')
-            wv = ttk.Label(frame, text=value+1, style='TLabel')
-            labels.extend([wl, wv])
+            wl = ttk.Label(container, text='CH', style='bold.TLabel')
+            wv = ttk.Label(container, text=value+1, style='bold.gray.TLabel')
+            wl.pack(side='left')
+            wv.pack(side='left')
+            labels_containers.append(container)
         # Type & val 1
         if has_type and not has_val1:
+            container = ttk.Frame(frame)
             type_name = self._change_attr_name(attrs['type'])
-            wl = ttk.Label(frame, text=type_name, style='TLabel')
-            labels.append(wl)
+            wl = ttk.Label(container, text=type_name, style='bold.TLabel')
+            wl.pack()
+            labels_containers.append(container)
         elif has_type and has_val1:
+            container = ttk.Frame(frame)
             name = self._change_attr_name(attrs['type'])
             val = [v for k, v in items if k in ['note', 'control', 'pitch']][0]
-            wl = ttk.Label(frame, text=name, style='bold.gray.TLabel')
-            wv = ttk.Label(frame, text=val+1, style='TLabel')
-            labels.extend([wl, wv])
+            wl = ttk.Label(container, text=name, style='bold.TLabel')
+            wv = ttk.Label(container, text=val+1, style='bold.gray.TLabel')
+            wl.pack(side='left')
+            wv.pack(side='left')
+            labels_containers.append(container)
         elif not has_type and has_val1:
+            container = ttk.Frame(frame)
             attr = [k for k in keys if k in ['note', 'control', 'pitch']][0]
             name = self._change_attr_name(attr)
             val1 = [v for k, v in items if k in ['note', 'control', 'pitch']][0]
-            wl = ttk.Label(frame, text=name, style='bold.gray.TLabel')
-            wv = ttk.Label(frame, text=val1+1, style='TLabel')
-            labels.extend([wl, wv])
+            wl = ttk.Label(container, text=name, style='bold.TLabel')
+            wv = ttk.Label(container, text=val1+1, style='bold.gray.TLabel')
+            wl.pack(side='left')
+            wv.pack(side='left')
+            labels_containers.append(container)
         # Val 2
         if has_val2:
+            container = ttk.Frame(frame)
             attr = [k for k in keys if k in ['velocity', 'value']][0]
             name = self._change_attr_name(attr)
             val2 = [v for k, v in items if k in ['velocity', 'value']][0]
-            wl = ttk.Label(frame, text=name, style='bold.gray.TLabel')
-            wv = ttk.Label(frame, text=val2+1, style='TLabel')
-            labels.extend([wl, wv])
+            wl = ttk.Label(container, text=name, style='bold.TLabel')
+            wv = ttk.Label(container, text=val2+1, style='bold.gray.TLabel')
+            wl.pack(side='left')
+            wv.pack(side='left')
+            labels_containers.append(container)
 
-        return labels
+        return labels_containers
 
     def _change_attr_name(self, attr_name):
         match attr_name:

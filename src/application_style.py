@@ -92,4 +92,11 @@ class ApplicationStyle(ttk.Style):
                 **FONT_SMALL,
                 **FG_GRAY,
             },
+
+            # SEPARATORS ##############
+
+            'light.TFrame': {
+                'height': 3,
+                'background': '#b7b7b7',
+            },
         }
