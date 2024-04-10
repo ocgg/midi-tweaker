@@ -46,8 +46,31 @@ class TabController:
     def _on_rule_submit(self, tab, tab_router):
         in_form_data = tab.frames['form'].in_form.get_form_state()
         out_form_data = tab.frames['form'].out_form.get_form_state()
+        self._clear_inputs(in_form_data, out_form_data)
 
         tab_router.add_rule(in_form_data, out_form_data)
 
         tab.frames['list'].update_list(tab_router.rules)
         tab.display_rules_list()
+
+    def _clear_inputs(self, in_form_data, out_form_data):
+        # Removes useless keys in both form_data
+        keys_to_remove = {'in': [], 'out': []}
+
+        same_type = in_form_data.get('type') == out_form_data.get('type')
+        for key, value in out_form_data.items():
+            same_val = in_form_data.get(key) == value
+            # CONDITIONS ORDER IS IMPORTANT
+            if same_type and key == 'type':
+                keys_to_remove['out'].append(key)
+            elif same_type and same_val:
+                keys_to_remove['in'].append(key)
+                keys_to_remove['out'].append(key)
+            elif not same_type and same_val:
+                # Case when note_on/note_off & same value
+                keys_to_remove['out'].append(key)
+
+        for key in keys_to_remove['in']:
+            in_form_data.pop(key)
+        for key in keys_to_remove['out']:
+            out_form_data.pop(key)
