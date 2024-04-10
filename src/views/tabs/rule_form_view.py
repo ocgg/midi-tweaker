@@ -7,10 +7,10 @@ class RuleFormView(ttk.Frame):
         super().__init__(master)
 
         # IN FORM #####################
-        in_form_frame = RuleFormFrame(self, 'in')
+        self.in_form = RuleFormFrame(self, 'in')
 
         # OUT FORM ####################
-        out_form_frame = RuleFormFrame(self, 'out')
+        self.out_form = RuleFormFrame(self, 'out')
 
         # SEPARATOR ###################
         separator = ttk.Frame(self)
@@ -34,6 +34,6 @@ class RuleFormView(ttk.Frame):
         self.columnconfigure(2, weight=1)
         self.rowconfigure(0, weight=1)
 
-        in_form_frame.grid(row=0, column=0, sticky='nsew')
+        self.in_form.grid(row=0, column=0, sticky='nsew')
         separator.grid(row=0, column=1, sticky='ns')
-        out_form_frame.grid(row=0, column=2, sticky='nsew')
+        self.out_form.grid(row=0, column=2, sticky='nsew')
