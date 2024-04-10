@@ -14,13 +14,5 @@ class MenuView(tk.Menu):
         self.file_menu.add_command(label="Quit")
         self.add_cascade(label="File", menu=self.file_menu)
 
-        # "MIDI ports" menu
-        self.ports_menu = tk.Menu(self, tearoff=0)
-        self.ports_menu.add_command(label="Refresh")
-        self.ports_menu.add_separator()
-        self.add_cascade(label="MIDI ports", menu=self.ports_menu)
-
-    # Called from controller
-    def build_ports_menu(self, ports):
-        for port in ports:
-            self.ports_menu.add_command(label=port)
+        # Add 'Open tab' button
+        self.add_command(label="Open tab")
