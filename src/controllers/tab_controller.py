@@ -33,7 +33,7 @@ class TabController:
 
     def _bind(self, tab):
         # RULE LIST ##########
-        add_rule_btn = tab['view'].frames['list'].add_rule_btn
+        add_rule_btn = tab['view'].frames['list'].widgets['add_rule_btn']
         add_rule_btn.config(command=lambda: tab['view'].display_rule_form())
 
         # RULE FORM ##########
