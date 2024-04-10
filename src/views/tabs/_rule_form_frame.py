@@ -72,12 +72,13 @@ class RuleFormFrame(ttk.Frame):
         for key, input in self.inputs.items():
             if not input or input.get() == self.ALL:
                 continue
-            input_values[key] = input.get()
+            value = input.get()
+            value = int(value)-1 if value.isdigit() else value
+            input_values[key] = value
         return input_values
 
     def _update_inputs(self, elements, text):
-        # Called by self._create_inputs_for,
-        # which is triggered on type selection
+        # Called by _create_inputs_for(), triggered by _on_type_selected()
         # self.inputs keys must match a mido msg property
         # case values must match the input's Label text
         match text:
