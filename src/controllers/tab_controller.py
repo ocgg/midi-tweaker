@@ -35,17 +35,27 @@ class TabController:
         tab_router = tab['router']
 
         # MIDI BARS ###################
+        # Port list comboboxes & refresh buttons
         self._bind_midi_bar(tab, 'in')
         self._bind_midi_bar(tab, 'out')
 
         # RULE LIST ###################
+        # Add rule button
         add_rule_btn = tab_view.frames['list'].add_rule_btn
         add_rule_btn.config(command=lambda: tab_view.display_rule_form())
 
         # RULE FORM ###################
+        # Submit button
         submit_btn = tab_view.frames['form'].submit_btn
         submit_btn.config(command=lambda:
                           self._on_rule_submit(tab_view, tab_router))
+        # Learn buttons
+        in_learn_btn = tab_view.frames['form'].in_form.learn_btn
+        out_learn_btn = tab_view.frames['form'].out_form.learn_btn
+        in_learn_btn.config(command=lambda:
+                            self._on_midi_learn(tab, 'in', in_learn_btn))
+        out_learn_btn.config(command=lambda:
+                             self._on_midi_learn(tab, 'out', out_learn_btn))
 
     def _bind_midi_bar(self, tab, source):
         tab_view = tab['view']
@@ -65,12 +75,29 @@ class TabController:
 
     # CALLBACKS ###############################################################
 
+    # MIDI Learn #####################
+    def _on_midi_learn(self, tab, source, learn_btn):
+        tab['router'].learn(source)
+        learn_btn.config(command=lambda:
+                         self._on_stop_midi_learn(tab, source, learn_btn))
+
+    def _on_stop_midi_learn(self, tab, source, learn_btn):
+        tab['router'].stop_learn(source)
+        learn_btn.config(command=lambda:
+                         self._on_midi_learn(tab, source, learn_btn))
+
+    # MIDI bar refresh ports ##########
     def _on_refresh(self, tab, source):
-        print
         midi_ports = tab['router'].get_midi_ports(source)
         tab['view'].update_midi_ports(source, midi_ports)
 
+    # Rule form submit ###############
     def _on_rule_submit(self, tab_view, tab_router):
+        # Stop midi_learn if active
+        if tab_router.learn_is_active:
+            tab_router.stop_learn('in')
+            tab_router.stop_learn('out')
+
         in_form_data = tab_view.frames['form'].in_form.get_form_state()
         out_form_data = tab_view.frames['form'].out_form.get_form_state()
         self._clear_inputs(in_form_data, out_form_data)
