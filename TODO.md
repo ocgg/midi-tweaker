@@ -2,8 +2,8 @@
 
 ## PRIORITE
 
-- tab name : actuellement 2 tabs ne DOIVENT pas avoir le même nom
-Et _open_tab du menu donne le même nom à tous
+- tab name : actuellement 2 tabs ne DOIVENT pas avoir le même nom (quoique ça
+a l'air de marcher quand même) et _open_tab du menu donne le même nom à tous
 
 - fermer un onglet
 - Renommer un onglet
@@ -16,8 +16,7 @@ Et _open_tab du menu donne le même nom à tous
 
 ## PETITES REFACTO
 
-- MidiPort sert à rien
-- ApplicationModel non plus...
+...
 
 ## GROSSES REFACTO
 
@@ -30,6 +29,10 @@ qu'une seule fois
 
 ## DIVERS
 
+- custom messagebox
+
+- DONNÉES PERSISTANTES
+
 - ECRIRE DES TESTS
 
 - Shortcuts clavier
@@ -38,10 +41,8 @@ qu'une seule fois
 
 ## PLUS TARD (RULES FEATURES)
 
-- annuler création rule
 - changer l'ordre des rules (glisser/déposer)
-- modifier rule
-- supprimer
+- CRUD sur rules
 
 - pouvoir choisir les inputs de in_msg dans les inputs de out_msg
 
