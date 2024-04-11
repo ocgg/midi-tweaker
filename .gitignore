@@ -1,4 +1,4 @@
-test*.py
+# test*.py
 # vim session files
 vim/
 vim/*
