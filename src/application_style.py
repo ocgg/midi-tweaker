@@ -89,14 +89,22 @@ class ApplicationStyle(ttk.Style):
                 'padding': (70, 10),
                 **FONT_BOLD,
             },
-            'learn.TButton': {
-                **FONT_SMALL,
-                **FG_GRAY,
-            },
             'refresh.TButton': {
                 'padding': 0,
                 **FONT_VERY_BIG,
                 'width': 2,
+            },
+
+            # Learn button
+            'learn.TButton': {
+                **FONT_SMALL,
+                **FG_GRAY,
+            },
+            'learning.TButton': {
+                **FONT_SMALL,
+                **FG_GRAY,
+                'background': 'gray',
+                'foreground': 'white',
             },
 
             # SEPARATORS ##############
