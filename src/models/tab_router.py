@@ -12,16 +12,14 @@ class TabRouter:
         self.tab_view = tab
         self.midi_in = None
         self.midi_out = None
-        # self.midi_in = self.set_input_port(port_name)
-        # self.midi_in.callback = self._midi_in_callback
-        # self.midi_out = mido.open_output(f'TWEAKED {port_name}', virtual=True)
         self.rules = []
+        self.learn_is_active = False
 
     def add_rule(self, in_msg_inputs, out_msg_inputs):
         rule = Rule(in_msg_inputs, out_msg_inputs)
         self.rules.append(rule)
 
-    # MIDI CONNECTIONS ########################################################
+    # MIDI CALLBACK ###########################################################
 
     def _midi_in_callback(self, msg, data=None):
         if msg.type not in self.CHANNEL_VOICE_TYPES:
@@ -39,6 +37,8 @@ class TabRouter:
             self.midi_out.send(new_msg)
             self.tab_view.display_midi_msg('out', new_msg)
         self.tab_view.display_midi_msg('in', msg)
+
+    # MIDI PORTS ##############################################################
 
     def get_midi_ports(self, source):
         if source == 'in':
@@ -59,7 +59,7 @@ class TabRouter:
             self.midi_in = mido.open_input(port_name)
             self.midi_in.callback = self._midi_in_callback
         except IOError:
-            messagebox.showerror("Error", "MIDI port not found")
+            messagebox.showerror("Error", f"MIDI port not found: {port_name}")
 
     def _set_output_port(self, port_name):
         if self.midi_out:
@@ -68,3 +68,33 @@ class TabRouter:
             self.midi_out = mido.open_output(port_name)
         except IOError:
             messagebox.showerror("Error", f"MIDI port not found: {port_name}")
+
+    # MIDI LEARN ##############################################################
+
+    def learn(self, source):
+        if not self.midi_in:
+            messagebox.showerror("Error", "No MIDI input port selected")
+            return
+
+        if source == 'in':
+            form_frame = self.tab_view.frames['form'].in_form
+        elif source == 'out':
+            form_frame = self.tab_view.frames['form'].out_form
+
+        self.midi_in.callback = lambda msg: self._midi_learn_callback(
+            msg, form_frame)
+        self.learn_is_active = True
+        form_frame.set_learn_btn_active()
+
+    def stop_learn(self, source):
+        if source == 'in':
+            form_frame = self.tab_view.frames['form'].in_form
+        elif source == 'out':
+            form_frame = self.tab_view.frames['form'].out_form
+
+        self.midi_in.callback = self._midi_in_callback
+        self.learn_is_active = False
+        form_frame.set_learn_btn_normal()
+
+    def _midi_learn_callback(self, msg, form_frame):
+        form_frame.set_form_state(msg)
