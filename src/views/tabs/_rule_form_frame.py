@@ -13,11 +13,9 @@ class RuleFormFrame(ttk.Frame):
 
         # FORM HANDLING ###############
         self.inputs = {}
-        inputs_names = ['ch', 'type', 'val1', 'val2']
-        for name in inputs_names:
-            self.inputs[name] = None
 
         # CONTAINERS ##################
+        inputs_names = ['ch', 'type', 'val1', 'val2']
         self.frames = {}
         containers = ['title'] + inputs_names + ['learn']
         for i, key in enumerate(containers):
@@ -51,6 +49,7 @@ class RuleFormFrame(ttk.Frame):
         learn_btn = ttk.Button(self.frames['learn'], text='LEARN')
         learn_btn.config(style='learn.TButton')
         learn_btn.grid(row=0, column=0)
+        self.learn_btn = learn_btn
 
         # LAYOUT ######################
         self.columnconfigure(0, weight=1)
@@ -76,6 +75,19 @@ class RuleFormFrame(ttk.Frame):
             value = int(value)-1 if value.isdigit() else value
             input_values[key] = value
         return input_values
+
+    def set_form_state(self, midi_msg):
+        self.inputs['channel'].current(midi_msg.channel+1)
+        self.inputs['type'].set(midi_msg.type)
+        self.inputs['type'].event_generate('<<ComboboxSelected>>')
+        if midi_msg.type == 'note_on' or midi_msg.type == 'note_off':
+            self.inputs['note'].set(midi_msg.note-1)
+            self.inputs['velocity'].set(midi_msg.velocity+1)
+        elif midi_msg.type == 'control_change':
+            self.inputs['control'].set(midi_msg.control+1)
+            self.inputs['value'].set(midi_msg.value+1)
+        elif midi_msg.type == 'pitchwheel':
+            self.inputs['pitch'].set(midi_msg.pitch+1)
 
     def _update_inputs(self, elements, text):
         # Called by _create_inputs_for(), triggered by _on_type_selected()
@@ -154,3 +166,11 @@ class RuleFormFrame(ttk.Frame):
         self._update_inputs(elements, text)
 
         return elements
+
+    # LEARN BTN STUFF #########################################################
+
+    def set_learn_btn_active(self):
+        self.learn_btn.config(text='Stop', style='learning.TButton')
+
+    def set_learn_btn_normal(self):
+        self.learn_btn.config(text='Learn', style='learn.TButton')
