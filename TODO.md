@@ -5,8 +5,6 @@
 - tab name : actuellement 2 tabs ne DOIVENT pas avoir le même nom
 Et _open_tab du menu donne le même nom à tous
 
-- faire marcher 'learn'
-
 - fermer un onglet
 - Renommer un onglet
 
@@ -18,7 +16,6 @@ Et _open_tab du menu donne le même nom à tous
 
 ## PETITES REFACTO
 
-- ttk partout
 - MidiPort sert à rien
 - ApplicationModel non plus...
 
