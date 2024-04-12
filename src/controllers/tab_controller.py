@@ -98,8 +98,8 @@ class TabController:
             tab_router.stop_learn('in')
             tab_router.stop_learn('out')
 
-        in_form_data = tab_view.frames['form'].in_form.get_form_state()
-        out_form_data = tab_view.frames['form'].out_form.get_form_state()
+        in_form_data = tab_view.frames['form'].in_form.get_form_data()
+        out_form_data = tab_view.frames['form'].out_form.get_form_data()
         self._clear_inputs(in_form_data, out_form_data)
 
         tab_router.add_rule(in_form_data, out_form_data)
