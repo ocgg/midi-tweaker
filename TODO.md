@@ -20,12 +20,7 @@ a l'air de marcher quand même) et _open_tab du menu donne le même nom à tous
 
 ## GROSSES REFACTO
 
-- RULE FORM
-- rendre l'affichage du midi learn performant en ne recréant pas les
-widgets tout le temps
-- mieux structurer le bordel. Le nom des clés d'un midi_msg ne doit changer
-qu'une seule fois
-- etc...
+...
 
 ## DIVERS
 
