@@ -13,9 +13,9 @@ def main():
     controller.menu_controller._open_tab()
     test_tab = controller.tab_controller.tabs['New tab']
 
-    keystation_port = mido.get_input_names()[1]
-    test_tab['view'].midi_bars['in']['ports']['combobox'].set(keystation_port)
-    test_tab['router'].set_midi_port(None, 'in', keystation_port)
+    port = mido.get_input_names()[0]
+    test_tab['view'].midi_bars['in']['ports']['combobox'].set(port)
+    test_tab['router'].set_midi_port(None, 'in', port)
 
     rule1_in = {'type': 'note_on', 'velocity': 0}
     rule1_out = {'type': 'note_off'}
@@ -39,7 +39,7 @@ def main():
     test_tab['view'].display_rule_form()
 
     # active midi learn
-    test_tab['view'].frames['form'].in_form.learn_btn.invoke()
+    # test_tab['view'].frames['form'].in_form.learn_btn.invoke()
 
     controller.start()
 
