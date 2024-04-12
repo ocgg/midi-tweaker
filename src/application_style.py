@@ -62,7 +62,6 @@ class ApplicationStyle(ttk.Style):
         FG_GRAY = {'foreground': 'gray'}
 
         return {
-
             # LABELS ##################
 
             'TLabel': {
@@ -105,6 +104,12 @@ class ApplicationStyle(ttk.Style):
                 **FG_GRAY,
                 'background': 'gray',
                 'foreground': 'white',
+            },
+
+            # COMBOBOXES ##############
+
+            'TCombobox': {
+                'padding': (7, 2),
             },
 
             # SEPARATORS ##############
