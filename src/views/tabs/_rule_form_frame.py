@@ -3,65 +3,116 @@ import tkinter.ttk as ttk
 
 class RuleFormFrame(ttk.Frame):
     # INPUT VALUES ####################
-    ALL = 'all/keep'
-    TYPES = [ALL, 'note_on', 'note_off', 'control_change', "pitchwheel"]
-    RANGE_16 = [ALL] + [i for i in range(1, 17)]
-    RANGE_128 = [ALL] + [i for i in range(1, 129)]
+    DEFAULT_VALUE = 'all/keep'
+    TYPES = [DEFAULT_VALUE,
+             'note_on', 'note_off', 'control_change', "pitchwheel"]
+    RANGE_16 = [DEFAULT_VALUE] + [i for i in range(1, 17)]
+    RANGE_128 = [DEFAULT_VALUE] + [i for i in range(1, 129)]
+
+    # HELPERS #################################################################
+
+    VAL1_NAME = {
+        'note_on': 'note',
+        'note_off': 'note',
+        'control_change': 'control',
+        'pitchwheel': 'pitch',
+        'program_change': 'program',
+        'sysex': 'data',
+    }
+    VAL2_NAME = {
+        'note_on': 'velocity',
+        'note_off': 'velocity',
+        'control_change': 'value',
+    }
 
     def __init__(self, rule_form_view, source):
         super().__init__(rule_form_view)
 
-        # FORM HANDLING ###############
         self.inputs = {}
+        self.labels = {}
 
-        # CONTAINERS ##################
-        inputs_names = ['ch', 'type', 'val1', 'val2']
-        self.frames = {}
-        containers = ['title'] + inputs_names + ['learn']
-        for i, key in enumerate(containers):
-            self.frames[key] = ttk.Frame(self)
+        # WIDGETS #########################################
 
         # TITLE #######################
-        title = 'When MIDI IN is :' if source == 'in' else 'Route it TO :'
-
-        self.frames['title'].rowconfigure(0, weight=1)
-        self.frames['title'].columnconfigure(0, weight=1)
-        title_label = ttk.Label(self.frames['title'], text=title,
-                                anchor='center')
+        title_txt = 'When MIDI IN is :' if source == 'in' else 'Route it TO :'
+        title_label = ttk.Label(self, text=title_txt, anchor='center')
         title_label.config(style='bold.TLabel')
-        title_label.grid(row=0, column=0, pady=10)
 
         # CHANNEL INPUT ###############
-        self._create_inputs_for(self.frames['ch'], 'CH', self.RANGE_16)
+        channel_label = ttk.Label(self, text='CH', style='bold.gray.TLabel')
+        channel_input = ttk.Combobox(self, values=self.RANGE_16, width=15)
+        self.labels['channel'] = channel_label
+        self.inputs['channel'] = channel_input
 
         # TYPE INPUT ##################
-        type_inputs = self._create_inputs_for(self.frames['type'], 'TYPE',
-                                              self.TYPES)
-        # Type selection event
-        type_inputs['input'].bind(
-            '<<ComboboxSelected>>',
-            lambda event: self._on_type_selected(event, type_inputs['input'])
-        )
+        type_label = ttk.Label(self, text='TYPE', style='bold.gray.TLabel')
+        type_input = ttk.Combobox(self, values=self.TYPES, width=15)
+        self.labels['type'] = type_label
+        self.inputs['type'] = type_input
+
+        # VAL 1 INPUT #################
+        val1_label = ttk.Label(self, text='VALUE 1', style='bold.gray.TLabel')
+        val1_input = ttk.Combobox(self, values=self.RANGE_128, width=15)
+        self.labels['val1'] = val1_label
+        self.inputs['val1'] = val1_input
+
+        # VAL 2 INPUT #################
+        val2_label = ttk.Label(self, text='VALUE 2', style='bold.gray.TLabel')
+        val2_input = ttk.Combobox(self, values=self.RANGE_128, width=15)
+        self.labels['val2'] = val2_label
+        self.inputs['val2'] = val2_input
 
         # LEARN BUTTON ################
-        self.frames['learn'].rowconfigure(0, weight=1)
-        self.frames['learn'].columnconfigure(0, weight=1)
-        learn_btn = ttk.Button(self.frames['learn'], text='LEARN')
-        learn_btn.config(style='learn.TButton')
-        learn_btn.grid(row=0, column=0)
-        self.learn_btn = learn_btn
+        self.learn_btn = ttk.Button(self, text='Learn')
+        self.learn_btn.config(style='learn.TButton')
 
-        # LAYOUT ######################
-        self.columnconfigure(0, weight=1)
+        # LAYOUT ##########################################
 
-        # Title frame
+        # Title
         self.rowconfigure(0, weight=0)
-        self.frames['title'].grid(row=0, sticky='ew')
+        title_label.grid(row=0, columnspan=2, sticky='ew', pady=20)
 
-        # Inputs frames
-        for i, frame in enumerate(self.frames.values()):
-            self.rowconfigure(i+1, minsize=45)
-            frame.grid(row=i+1, sticky='ew')
+        # Inputs
+        PADX = {'padx': (0, 10)}
+        PADY = {'pady': (0, 30)}
+
+        self.columnconfigure(0, weight=0, minsize=100)
+        for i, label in enumerate(self.labels.values(), start=1):
+            label.grid(row=i, column=0, sticky='e', **PADY, **PADX)
+
+        self.columnconfigure(1, weight=2)
+        for i, input in enumerate(self.inputs.values(), start=1):
+            input.grid(row=i, column=1, sticky='ew', **PADY, padx=(0, 20))
+
+        # Learn button
+        self.rowconfigure(5, weight=1)
+        self.learn_btn.grid(row=len(self.labels)+1, column=0, columnspan=2)
+
+        # INPUTS INIT #####################################
+
+        # TYPE SELECTION EVENT ########
+        self.inputs['type'].bind(
+            '<<ComboboxSelected>>',
+            lambda event: self._on_type_selected(event)
+        )
+        # DEFAULTS VALUES & STATES ####
+        self.inputs['channel'].current(0)
+        self.inputs['type'].current(0)
+
+        self.inputs['type'].config(state='readonly')
+        self.inputs['val1'].config(state='disabled')
+        self.inputs['val2'].config(state='disabled')
+
+        # ALIASES #########################################
+        # These are for easier management of values 1 & 2 names
+
+        for name in self.VAL1_NAME.values():
+            self.inputs[name] = self.inputs['val1']
+            self.labels[name] = self.labels['val1']
+
+        for name in self.VAL2_NAME.values():
+            self.inputs[name] = self.inputs['val2']
+            self.labels[name] = self.labels['val2']
 
     # FORM HANDLING ###########################################################
 
@@ -69,108 +120,56 @@ class RuleFormFrame(ttk.Frame):
         input_values = {}
 
         for key, input in self.inputs.items():
-            if not input or input.get() == self.ALL:
+            if not input or input.get() == self.DEFAULT_VALUE:
                 continue
             value = input.get()
             value = int(value)-1 if value.isdigit() else value
             input_values[key] = value
         return input_values
 
-    def set_form_state(self, midi_msg):
-        self.inputs['channel'].current(midi_msg.channel+1)
-        self.inputs['type'].set(midi_msg.type)
-        self.inputs['type'].event_generate('<<ComboboxSelected>>')
-        if midi_msg.type == 'note_on' or midi_msg.type == 'note_off':
-            self.inputs['note'].set(midi_msg.note-1)
-            self.inputs['velocity'].set(midi_msg.velocity+1)
-        elif midi_msg.type == 'control_change':
-            self.inputs['control'].set(midi_msg.control+1)
-            self.inputs['value'].set(midi_msg.value+1)
-        elif midi_msg.type == 'pitchwheel':
-            self.inputs['pitch'].set(midi_msg.pitch+1)
-
-    def _update_inputs(self, elements, text):
-        # Called by _create_inputs_for(), triggered by _on_type_selected()
-        # self.inputs keys must match a mido msg property
-        # case values must match the input's Label text
-        match text:
-            case 'CH':
-                self.inputs['channel'] = elements['input']
-            case 'TYPE':
-                self.inputs['type'] = elements['input']
-            case 'NOTE':
-                self.inputs['note'] = elements['input']
-            case 'VELOCITY':
-                self.inputs['velocity'] = elements['input']
-            case 'CONTROL':
-                self.inputs['control'] = elements['input']
-            case 'VALUE':
-                self.inputs['value'] = elements['input']
-            case 'PITCH':
-                self.inputs['pitch'] = elements['input']
-
     # TYPE SELECTION EVENT ####################################################
 
-    def _on_type_selected(self, event, type_input):
-        self._clear_inputs()
+    def _on_type_selected(self, event):
+        selected_type = event.widget.get()
 
-        val1_frame = self.frames['val1']
-        val2_frame = self.frames['val2']
+        val1_name = self.VAL1_NAME.get(selected_type)
+        if val1_name:
+            self.labels[val1_name].config(text=val1_name.upper())
+            self.inputs[val1_name].config(state='normal')
+        else:
+            self.labels['val1'].config(text='VALUE 1')
+            self.inputs['val1'].config(state='disabled')
 
-        match type_input.get():
-            case 'note_on' | 'note_off':
-                self._create_inputs_for(val1_frame, 'NOTE', self.RANGE_128)
-                self._create_inputs_for(val2_frame, 'VELOCITY', self.RANGE_128)
-            case 'control_change':
-                self._create_inputs_for(val1_frame, 'CONTROL', self.RANGE_128)
-                self._create_inputs_for(val2_frame, 'VALUE', self.RANGE_128)
-            case 'pitchwheel':
-                self._create_inputs_for(val1_frame, 'PITCH', self.RANGE_128)
+        val2_name = self.VAL2_NAME.get(selected_type)
+        if val2_name:
+            self.labels[val2_name].config(text=val2_name.upper())
+            self.inputs[val2_name].config(state='normal')
+        else:
+            self.labels['val2'].config(text='VALUE 2')
+            self.inputs['val2'].config(state='disabled')
 
-    def _clear_inputs(self):
-        val1_widgets = self.frames['val1'].winfo_children()
-        val2_widgets = self.frames['val2'].winfo_children()
-        for widget in [*val1_widgets, *val2_widgets]:
-            widget.destroy()
-
-        inputs = self.inputs.items()
-        to_keep = ['channel', 'type']
-        self.inputs = {k: v for k, v in inputs if k in to_keep}
-
-    # INPUTS BUILDING #########################################################
-
-    def _create_inputs_for(self, container, text, values):
-        # Widgets init
-        elements = {
-            'label': ttk.Label(
-                container, text=text,
-                style='bold.gray.TLabel',
-            ),
-            'input': ttk.Combobox(container, values=values,
-                                  state='readonly',
-                                  width=15),
-        }
-        # Widget layout in container
-        elements['input'].current(0)  # Set default value
-        elements['label'].grid(row=0, column=0, sticky='e')
-        elements['input'].grid(row=0, column=1, sticky='w', padx=(10, 0))
-
-        # Container layout
-        container.rowconfigure(0, weight=1)
-        # Label column ('CH', 'TYPE', ...)
-        container.columnconfigure(0, weight=1, minsize=80)
-        # Inputs column (Comboboxes)
-        container.columnconfigure(1, weight=1, minsize=210)
-
-        # Update inputs for form handling
-        self._update_inputs(elements, text)
-
-        return elements
-
-    # LEARN BTN STUFF #########################################################
+    # LEARN ###################################################################
 
     def set_learn_btn_active(self):
         self.learn_btn.config(text='Stop', style='learning.TButton')
 
     def set_learn_btn_normal(self):
         self.learn_btn.config(text='Learn', style='learn.TButton')
+
+    def set_form_state(self, midi_msg):
+        self.inputs['channel'].set(midi_msg.channel+1)
+        self.inputs['type'].set(midi_msg.type)
+        self.inputs['type'].event_generate('<<ComboboxSelected>>')
+        # if midi_msg.type in ['note_on', 'note_off']:
+        #     self.inputs['val1'].set(midi_msg.note+1)
+        #     self.inputs['val2'].set(midi_msg.velocity+1)
+        # elif midi_msg.type == 'control_change':
+        #     self.inputs['val1'].set(midi_msg.control+1)
+        #     self.inputs['val2'].set(midi_msg.value+1)
+        # elif midi_msg.type == 'pitchwheel':
+        #     self.inputs['val1'].set(midi_msg.pitch+1)
+
+        # TODO: verify if it works thanks to aliases:
+        for k, v in midi_msg.dict().items():
+            if self.inputs.get(k):
+                self.inputs[k].set(v+1)
