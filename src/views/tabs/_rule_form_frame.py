@@ -116,15 +116,30 @@ class RuleFormFrame(ttk.Frame):
 
     # FORM HANDLING ###########################################################
 
-    def get_form_state(self):
+    def get_form_data(self):
         input_values = {}
 
-        for key, input in self.inputs.items():
-            if not input or input.get() == self.DEFAULT_VALUE:
+        form_data = {
+            'channel': self.inputs['channel'].get(),
+            'type': self.inputs['type'].get(),
+        }
+
+        type_selected = form_data['type'] != self.DEFAULT_VALUE
+
+        if type_selected:
+            val1_name = self.VAL1_NAME.get(form_data['type'])
+            val2_name = self.VAL2_NAME.get(form_data['type'])
+            if val1_name:
+                form_data[val1_name] = self.inputs[val1_name].get()
+            if val2_name:
+                form_data[val2_name] = self.inputs[val2_name].get()
+
+        for key, value in form_data.items():
+            if not value or value == self.DEFAULT_VALUE:
                 continue
-            value = input.get()
             value = int(value)-1 if value.isdigit() else value
             input_values[key] = value
+
         return input_values
 
     # TYPE SELECTION EVENT ####################################################
@@ -160,14 +175,6 @@ class RuleFormFrame(ttk.Frame):
         self.inputs['channel'].set(midi_msg.channel+1)
         self.inputs['type'].set(midi_msg.type)
         self.inputs['type'].event_generate('<<ComboboxSelected>>')
-        # if midi_msg.type in ['note_on', 'note_off']:
-        #     self.inputs['val1'].set(midi_msg.note+1)
-        #     self.inputs['val2'].set(midi_msg.velocity+1)
-        # elif midi_msg.type == 'control_change':
-        #     self.inputs['val1'].set(midi_msg.control+1)
-        #     self.inputs['val2'].set(midi_msg.value+1)
-        # elif midi_msg.type == 'pitchwheel':
-        #     self.inputs['val1'].set(midi_msg.pitch+1)
 
         # TODO: verify if it works thanks to aliases:
         for k, v in midi_msg.dict().items():
