@@ -30,8 +30,8 @@ class RuleFormView(ttk.Frame):
         self.submit_btn.grid(row=1, column=0, columnspan=3, pady=(0, 10))
 
         # LAYOUT ######################
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(2, weight=1)
+        self.columnconfigure(0, weight=1, uniform='form_frame')
+        self.columnconfigure(2, weight=1, uniform='form_frame')
         self.rowconfigure(0, weight=1)
 
         self.in_form.grid(row=0, column=0, sticky='nsew')
