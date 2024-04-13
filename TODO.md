@@ -2,6 +2,8 @@
 
 ## PRIORITE
 
+- ranges
+
 - tab name : actuellement 2 tabs ne DOIVENT pas avoir le même nom (quoique ça
 a l'air de marcher quand même) et _open_tab du menu donne le même nom à tous
 
