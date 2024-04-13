@@ -44,21 +44,21 @@ class TabView(ttk.Frame):
         labels['type']['label'].config(text='TYPE')
         labels['type']['value'].config(text=msg_type)
         labels['channel']['label'].config(text='CH')
-        labels['channel']['value'].config(text=msg.channel+1)
+        labels['channel']['value'].config(text=msg.channel)
         match msg.type:
             case 'note_on' | 'note_off':
                 labels['val_1']['label'].config(text='NOTE')
-                labels['val_1']['value'].config(text=msg.bytes()[1]+1)
+                labels['val_1']['value'].config(text=msg.bytes()[1])
                 labels['val_2']['label'].config(text='VELOCITY')
-                labels['val_2']['value'].config(text=msg.bytes()[2]+1)
+                labels['val_2']['value'].config(text=msg.bytes()[2])
             case 'control_change':
                 labels['val_1']['label'].config(text='CONTROL')
-                labels['val_1']['value'].config(text=msg.bytes()[1]+1)
+                labels['val_1']['value'].config(text=msg.bytes()[1])
                 labels['val_2']['label'].config(text='VALUE')
-                labels['val_2']['value'].config(text=msg.bytes()[2]+1)
+                labels['val_2']['value'].config(text=msg.bytes()[2])
             case 'pitchwheel':
                 labels['val_1']['label'].config(text='PITCH')
-                labels['val_1']['value'].config(text=msg.pitch+1)
+                labels['val_1']['value'].config(text=msg.pitch)
                 labels['val_2']['label'].config(text='')
                 labels['val_2']['value'].config(text='')
 

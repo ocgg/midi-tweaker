@@ -92,7 +92,7 @@ class RulesListView(ttk.Frame):
         # Channel
         if 'channel' in keys:
             value = attrs['channel']
-            container = self._create_attribute_container(frame, 'CH', value+1)
+            container = self._create_attribute_container(frame, 'CH', value)
             labels_containers.append(container)
         # Type & val 1
         if has_type and not has_val1:
@@ -102,20 +102,20 @@ class RulesListView(ttk.Frame):
         elif has_type and has_val1:
             name = self._change_attr_name(attrs['type'])
             value = next((v for k, v in items if k in MIDI_NBRS))
-            container = self._create_attribute_container(frame, name, value+1)
+            container = self._create_attribute_container(frame, name, value)
             labels_containers.append(container)
         elif not has_type and has_val1:
             attr = next((k for k in keys if k in MIDI_NBRS))
             name = self._change_attr_name(attr)
             value = next((v for k, v in items if k in MIDI_NBRS))
-            container = self._create_attribute_container(frame, name, value+1)
+            container = self._create_attribute_container(frame, name, value)
             labels_containers.append(container)
         # Val 2
         if has_val2:
             attr = next((k for k in keys if k in MIDI_VALUES))
             name = self._change_attr_name(attr)
             value = next((v for k, v in items if k in MIDI_VALUES))
-            container = self._create_attribute_container(frame, name, value+1)
+            container = self._create_attribute_container(frame, name, value)
             labels_containers.append(container)
 
         return labels_containers

@@ -137,7 +137,7 @@ class RuleFormFrame(ttk.Frame):
         for key, value in form_data.items():
             if not value or value == self.DEFAULT_VALUE:
                 continue
-            value = int(value)-1 if value.isdigit() else value
+            value = int(value) if value.isdigit() else value
             input_values[key] = value
 
         return input_values
@@ -172,11 +172,11 @@ class RuleFormFrame(ttk.Frame):
         self.learn_btn.config(text='Learn', style='learn.TButton')
 
     def set_form_state(self, midi_msg):
-        self.inputs['channel'].set(midi_msg.channel+1)
+        self.inputs['channel'].set(midi_msg.channel)
         self.inputs['type'].set(midi_msg.type)
         self.inputs['type'].event_generate('<<ComboboxSelected>>')
 
         # TODO: verify if it works thanks to aliases:
         for k, v in midi_msg.dict().items():
             if self.inputs.get(k):
-                self.inputs[k].set(v+1)
+                self.inputs[k].set(v)
