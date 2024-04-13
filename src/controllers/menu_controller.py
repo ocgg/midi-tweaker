@@ -18,7 +18,7 @@ class MenuController:
         self.file_menu.entryconfig('Quit', command=self.view.root.quit)
 
         # Open tab btn ###############
-        self.app_menu.entryconfig('Open tab', command=self._open_tab)
+        self.app_menu.entryconfig('Open new tab', command=self._open_tab)
 
     # CALLBACKS ###############################################################
 
