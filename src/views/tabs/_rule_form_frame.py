@@ -4,7 +4,7 @@ from src.modules.constants import MIDO_TYPE_TO_VAL1, MIDO_TYPE_TO_VAL2
 
 class RuleFormFrame(ttk.Frame):
     # INPUT VALUES ####################
-    DEFAULT_VALUE = 'all/keep'
+    DEFAULT_VALUE = ''
     TYPES = [DEFAULT_VALUE,
              'note_on', 'note_off', 'control_change', "pitchwheel"]
     RANGE_16 = [DEFAULT_VALUE] + [i for i in range(1, 17)]
@@ -99,34 +99,6 @@ class RuleFormFrame(ttk.Frame):
             self.inputs[name] = self.inputs['val2']
             self.labels[name] = self.labels['val2']
 
-    # FORM HANDLING ###########################################################
-
-    def get_form_data(self):
-        input_values = {}
-
-        form_data = {
-            'channel': self.inputs['channel'].get(),
-            'type': self.inputs['type'].get(),
-        }
-
-        type_selected = form_data['type'] != self.DEFAULT_VALUE
-
-        if type_selected:
-            val1_name = MIDO_TYPE_TO_VAL1.get(form_data['type'])
-            val2_name = MIDO_TYPE_TO_VAL2.get(form_data['type'])
-            if val1_name:
-                form_data[val1_name] = self.inputs[val1_name].get()
-            if val2_name:
-                form_data[val2_name] = self.inputs[val2_name].get()
-
-        for key, value in form_data.items():
-            if not value or value == self.DEFAULT_VALUE:
-                continue
-            value = int(value) if value.isdigit() else value
-            input_values[key] = value
-
-        return input_values
-
     # TYPE SELECTION EVENT ####################################################
 
     def _on_type_selected(self, event):
@@ -165,3 +137,9 @@ class RuleFormFrame(ttk.Frame):
         for k, v in midi_msg.dict().items():
             if self.inputs.get(k):
                 self.inputs[k].set(v)
+
+    # VALIDATIONS #############################################################
+
+    def display_errors(self, form_data):
+        # TODO:
+        print(form_data)
