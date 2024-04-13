@@ -15,4 +15,4 @@ class MenuView(tk.Menu):
         self.add_cascade(label="File", menu=self.file_menu)
 
         # Add 'Open tab' button
-        self.add_command(label="Open tab")
+        self.add_command(label="Open new tab")
