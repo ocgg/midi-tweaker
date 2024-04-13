@@ -14,16 +14,20 @@ class ApplicationView:
         self.app_menu = MenuView(self.root)
         self.root.config(menu=self.app_menu)
 
-        self._add_frame(TabsContainerView, "tabs_container")
-        self._add_frame(HomeView, "home")
+        # FRAMES ######################
 
-    # PRIVATE ##########
+        self.frames['home'] = HomeView(self.root)
+        self.frames['tabs_container'] = TabsContainerView(self.root)
 
-    def _add_frame(self, Frame, name):
-        self.frames[name] = Frame(self.root)
-        self.frames[name].grid(row=0, column=0, sticky="nsew")
+        # INIT ########################
+        self.frames['home'].tkraise()
 
-    # INIT ##########
+        # LAYOUT ######################
+
+        for frame in self.frames.values():
+            frame.grid(row=0, column=0, sticky='nsew')
+
+    # MAIN LOOP ###############################################################
 
     def start_mainloop(self):
         self.root.mainloop()
