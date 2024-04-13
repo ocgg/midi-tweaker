@@ -4,8 +4,9 @@ from .tabs.tab_controller import TabController
 
 
 class TabsContainerController:
-    def __init__(self, controller, model, view):
-        self.tabs_container_view = view.frames['tabs_container']
+    def __init__(self, tabs_container_view):
+        self.view = tabs_container_view
+
         self.tabs = {}
 
     def add_tab(self, tab_name):

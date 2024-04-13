@@ -7,8 +7,10 @@ class ApplicationController:
         self.model = model
         self.view = view
 
+        tabs_container_view = self.view.frames['tabs_container']
         self.tabs_container_controller = TabsContainerController(
-            self, model, view)
+            tabs_container_view)
+
         self.menu_controller = MenuController(self, model, view)
 
     def start(self):
