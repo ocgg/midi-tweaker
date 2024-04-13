@@ -1,4 +1,5 @@
 import tkinter.ttk as ttk
+from src.modules.constants import MIDO_TYPE_TO_VAL1, MIDO_TYPE_TO_VAL2
 
 
 class RuleFormFrame(ttk.Frame):
@@ -8,22 +9,6 @@ class RuleFormFrame(ttk.Frame):
              'note_on', 'note_off', 'control_change', "pitchwheel"]
     RANGE_16 = [DEFAULT_VALUE] + [i for i in range(1, 17)]
     RANGE_128 = [DEFAULT_VALUE] + [i for i in range(1, 129)]
-
-    # HELPERS #################################################################
-
-    VAL1_NAME = {
-        'note_on': 'note',
-        'note_off': 'note',
-        'control_change': 'control',
-        'pitchwheel': 'pitch',
-        'program_change': 'program',
-        'sysex': 'data',
-    }
-    VAL2_NAME = {
-        'note_on': 'velocity',
-        'note_off': 'velocity',
-        'control_change': 'value',
-    }
 
     def __init__(self, rule_form_view, source):
         super().__init__(rule_form_view)
@@ -106,11 +91,11 @@ class RuleFormFrame(ttk.Frame):
         # ALIASES #########################################
         # These are for easier management of values 1 & 2 names
 
-        for name in self.VAL1_NAME.values():
+        for name in MIDO_TYPE_TO_VAL1.values():
             self.inputs[name] = self.inputs['val1']
             self.labels[name] = self.labels['val1']
 
-        for name in self.VAL2_NAME.values():
+        for name in MIDO_TYPE_TO_VAL2.values():
             self.inputs[name] = self.inputs['val2']
             self.labels[name] = self.labels['val2']
 
@@ -127,8 +112,8 @@ class RuleFormFrame(ttk.Frame):
         type_selected = form_data['type'] != self.DEFAULT_VALUE
 
         if type_selected:
-            val1_name = self.VAL1_NAME.get(form_data['type'])
-            val2_name = self.VAL2_NAME.get(form_data['type'])
+            val1_name = MIDO_TYPE_TO_VAL1.get(form_data['type'])
+            val2_name = MIDO_TYPE_TO_VAL2.get(form_data['type'])
             if val1_name:
                 form_data[val1_name] = self.inputs[val1_name].get()
             if val2_name:
@@ -147,7 +132,7 @@ class RuleFormFrame(ttk.Frame):
     def _on_type_selected(self, event):
         selected_type = event.widget.get()
 
-        val1_name = self.VAL1_NAME.get(selected_type)
+        val1_name = MIDO_TYPE_TO_VAL1.get(selected_type)
         if val1_name:
             self.labels[val1_name].config(text=val1_name.upper())
             self.inputs[val1_name].config(state='normal')
@@ -155,7 +140,7 @@ class RuleFormFrame(ttk.Frame):
             self.labels['val1'].config(text='VALUE 1')
             self.inputs['val1'].config(state='disabled')
 
-        val2_name = self.VAL2_NAME.get(selected_type)
+        val2_name = MIDO_TYPE_TO_VAL2.get(selected_type)
         if val2_name:
             self.labels[val2_name].config(text=val2_name.upper())
             self.inputs[val2_name].config(state='normal')
