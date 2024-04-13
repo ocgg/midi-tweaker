@@ -1,6 +1,5 @@
 import mido
 from tkinter import messagebox
-from .rule import Rule
 
 
 # Router is the rules controller for one Tab.
@@ -15,8 +14,7 @@ class TabRouter:
         self.rules = []
         self.learn_is_active = False
 
-    def add_rule(self, in_msg_inputs, out_msg_inputs):
-        rule = Rule(in_msg_inputs, out_msg_inputs)
+    def add_rule(self, rule):
         self.rules.append(rule)
 
     # MIDI CALLBACK ###########################################################
