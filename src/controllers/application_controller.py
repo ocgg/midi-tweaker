@@ -1,5 +1,5 @@
 from .menu_controller import MenuController
-from .tab_controller import TabController
+from .tabs_container_controller import TabsContainerController
 
 
 class ApplicationController:
@@ -7,7 +7,8 @@ class ApplicationController:
         self.model = model
         self.view = view
 
-        self.tab_controller = TabController(self, model, view)
+        self.tabs_container_controller = TabsContainerController(
+            self, model, view)
         self.menu_controller = MenuController(self, model, view)
 
     def start(self):

@@ -1,8 +1,9 @@
 from ..views.tabs.tab_view import TabView
 from ..models.tab_router import TabRouter
+from ..models.rule import Rule
 
 
-class TabController:
+class TabsContainerController:
     def __init__(self, controller, model, view):
         self.model = model
         self.view = view
@@ -100,9 +101,16 @@ class TabController:
 
         in_form_data = tab_view.frames['form'].in_form.get_form_data()
         out_form_data = tab_view.frames['form'].out_form.get_form_data()
+
+        # validate in_form_data
+        #
+
         self._clear_inputs(in_form_data, out_form_data)
 
-        tab_router.add_rule(in_form_data, out_form_data)
+        # TODO: Rule validations
+
+        rule = Rule(in_form_data, out_form_data)
+        tab_router.add_rule(rule)
 
         tab_view.frames['list'].update_list(tab_router.rules)
         tab_view.display_rules_list()
