@@ -19,13 +19,12 @@ class ApplicationView:
         self.frames['home'] = HomeView(self.root)
         self.frames['tabs_container'] = TabsContainerView(self.root)
 
-        # INIT ########################
-        self.frames['home'].tkraise()
-
         # LAYOUT ######################
 
         for frame in self.frames.values():
             frame.grid(row=0, column=0, sticky='nsew')
+
+        self.frames['home'].tkraise()
 
     # MAIN LOOP ###############################################################
 
