@@ -5,7 +5,6 @@ class Rule:
     def __init__(self, in_attrs, out_attrs):
         self.in_attrs = in_attrs
         self.out_attrs = out_attrs
-        print(in_attrs, out_attrs)
         self.is_type_conversion = self._check_type_conversion()
 
     def translate(self, msg):
