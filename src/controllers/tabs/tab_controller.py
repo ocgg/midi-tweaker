@@ -95,9 +95,11 @@ class TabController:
             self.router.add_rule(rule)
             self.list_frame.update_list(self.router.rules)
             self.view.display_rules_list()
+        elif not out_form_data:
+            self.form_frame.out_form.display_global_error()
         else:
-            self.form_frame.in_form.display_errors(in_form_data)
-            self.form_frame.out_form.display_errors(out_form_data)
+            self.form_frame.in_form.display_field_errors(in_form_data)
+            self.form_frame.out_form.display_field_errors(out_form_data)
 
     def _validate_form_data(self, in_form_data, out_form_data):
         # VALIDATIONS #####################################
@@ -109,7 +111,6 @@ class TabController:
 
         # On both forms ###############
         # - Out form should not be empty
-        # - Same field should not have equal values
         # - ...
 
         # FIELD VALIDATIONS ###############################
@@ -128,11 +129,14 @@ class TabController:
         # Remove values that are equal in both forms
         key_to_remove = []
         for key, value in in_form_data.items():
-            if value == out_form_data[key]:
+            if out_form_data.get(key) and value == out_form_data[key]:
                 key_to_remove.append(key)
         for key in key_to_remove:
             del in_form_data[key]
             del out_form_data[key]
+
+        if not out_form_data:
+            is_valid = False
 
         return (is_valid, in_form_data, out_form_data)
 
