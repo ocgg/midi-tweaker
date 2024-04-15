@@ -14,5 +14,7 @@ class MenuView(tk.Menu):
         self.file_menu.add_command(label="Quit")
         self.add_cascade(label="File", menu=self.file_menu)
 
+        # KEEP THIS ##################
+        # Tab functionality will come back later
         # Add 'Open tab' button
-        self.add_command(label="Open new tab")
+        # self.add_command(label="Open new tab")

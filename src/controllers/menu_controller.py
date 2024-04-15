@@ -18,10 +18,15 @@ class MenuController:
         self.file_menu.entryconfig('Quit', command=self.view.root.quit)
 
         # Open tab btn ###############
-        self.app_menu.entryconfig('Open new tab', command=self._open_tab)
+
+        # KEEP THIS ##################
+        # Tab functionality will come back later
+        # self.app_menu.entryconfig('Open new tab', command=self._open_tab)
 
     # CALLBACKS ###############################################################
 
-    def _open_tab(self):
-        self.tabs_container.tkraise()
-        self.tabs_container_controller.add_tab('New tab')
+    # KEEP THIS ##################
+    # Tab functionality will come back later
+    # def _open_tab(self):
+    #     self.tabs_container.tkraise()
+    #     self.tabs_container_controller.add_tab('New tab')
