@@ -3,6 +3,7 @@ from src.modules.constants import (
         MIDO_TYPE_TO_VAL1,
         MIDO_TYPE_TO_VAL2,
         MIDO_TYPE_TO_VALUES,
+        FORM_ATTR_RANGE,
 )
 
 
@@ -90,7 +91,6 @@ class RuleFormFrame(ttk.Frame):
 
         # Learn button
         self.rowconfigure(9, weight=1)
-        print(len(self.labels)*2)
         self.learn_btn.grid(row=len(self.labels)*2+1, column=0, columnspan=2)
 
         # INPUTS INIT #####################################
@@ -114,10 +114,12 @@ class RuleFormFrame(ttk.Frame):
         for name in MIDO_TYPE_TO_VAL1.values():
             self.inputs[name] = self.inputs['val1']
             self.labels[name] = self.labels['val1']
+            self.validation_labels[name] = self.validation_labels['val1']
 
         for name in MIDO_TYPE_TO_VAL2.values():
             self.inputs[name] = self.inputs['val2']
             self.labels[name] = self.labels['val2']
+            self.validation_labels[name] = self.validation_labels['val2']
 
     # INPUTS PROPERTY #########################################################
 
@@ -179,7 +181,11 @@ class RuleFormFrame(ttk.Frame):
     # VALIDATIONS #############################################################
 
     def display_errors(self, form_data):
-        # TODO:
-        # Add error text in self.validation_labels
-        # for the field that causes error
-        print(form_data)
+        for field, input in form_data.items():
+            if input or field == 'type':
+                continue
+            validation_label = self.validation_labels[field]
+            min = FORM_ATTR_RANGE[field][0]
+            max = FORM_ATTR_RANGE[field][-1]
+            error_msg = f'Should be a number or range between {min} and {max}.'
+            validation_label.config(text=error_msg)

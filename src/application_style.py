@@ -81,7 +81,7 @@ class ApplicationStyle(ttk.Style):
                 **FONT_BOLD,
                 **FG_GRAY
             },
-            'validation.TLabel': {
+            'error.TLabel': {
                 **FONT_SMALL,
                 'foreground': 'red',
             },
