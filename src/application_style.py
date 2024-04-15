@@ -81,6 +81,10 @@ class ApplicationStyle(ttk.Style):
                 **FONT_BOLD,
                 **FG_GRAY
             },
+            'validation.TLabel': {
+                **FONT_SMALL,
+                'foreground': 'red',
+            },
 
             # BUTTONS #################
 
