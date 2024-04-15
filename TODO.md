@@ -12,10 +12,6 @@ a l'air de marcher quand même) et _open_tab du menu donne le même nom à tous
 
 - créer un port out virtuel
 
-- Bouton 'back' dans rule form
-
-- form validation
-
 - infobox sur le form & autres
     - ranges sur le label d'attribut
 

@@ -14,8 +14,8 @@ def main():
     controller.menu_controller._open_tab()
     test_tab = controller.tabs_container_controller.tabs['New tab']
 
-    in_port = mido.get_input_names()[1]
-    out_port = mido.get_output_names()[1]
+    in_port = mido.get_input_names()[0]
+    out_port = mido.get_output_names()[0]
 
     test_tab['view'].midi_bars['in']['ports']['combobox'].set(in_port)
     test_tab['view'].midi_bars['out']['ports']['combobox'].set(out_port)
