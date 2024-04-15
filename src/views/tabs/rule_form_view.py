@@ -25,15 +25,31 @@ class RuleFormView(ttk.Frame):
         sep_label.grid(row=1, column=0)
         sep_2.grid(row=2, column=0, sticky='ns', pady=(0, 10))
 
-        # SUBMIT BUTTON ###############
-        self.submit_btn = ttk.Button(self, text='Done', style='big.TButton')
-        self.submit_btn.grid(row=1, column=0, columnspan=3, pady=(0, 10))
+        # BUTTONS #####################
+        buttons_container = ttk.Frame(self)
+        buttons_container.rowconfigure(0, weight=1)
+        buttons_container.columnconfigure(0, weight=1, uniform='buttons')
+        buttons_container.columnconfigure(2, weight=1, uniform='buttons')
+
+        self.back_btn = ttk.Button(buttons_container, text='Cancel')
+        self.submit_btn = ttk.Button(buttons_container, text='Done')
+        self.back_btn.config(style='cancel.TButton')
+        self.submit_btn.config(style='big.TButton')
+
+        self.back_btn.grid(row=0, column=0, sticky='e')
+        self.submit_btn.grid(row=0, column=1)
 
         # LAYOUT ######################
         self.columnconfigure(0, weight=1, uniform='form_frame')
         self.columnconfigure(2, weight=1, uniform='form_frame')
         self.rowconfigure(0, weight=1)
+        self.rowconfigure(1, weight=1)
 
+        # Row 0
         self.in_form.grid(row=0, column=0, sticky='nsew')
         separator.grid(row=0, column=1, sticky='ns')
         self.out_form.grid(row=0, column=2, sticky='nsew')
+
+        # Row 1
+        buttons_container.grid(row=1, column=0, columnspan=3,
+                               sticky='ew', pady=(0, 10))
