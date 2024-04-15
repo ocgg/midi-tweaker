@@ -24,6 +24,7 @@ MIDO_TYPE_TO_VALUES = {
     'sysex': ['data'],
 }
 
+# TODO: useless?
 MIDO_ATTR_RANGE = {
     'type': ['note_on', 'note_off', 'control_change', 'pitchwheel',
              'program_change'],
