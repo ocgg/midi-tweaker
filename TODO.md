@@ -26,6 +26,7 @@ a l'air de marcher quand même) et _open_tab du menu donne le même nom à tous
 ## PETITES REFACTO
 
 - Bouger les validations dans le modèle Rule
+- Réécrire les validations en mieux...
 
 ## GROSSES REFACTO
 
