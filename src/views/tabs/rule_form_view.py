@@ -31,12 +31,12 @@ class RuleFormView(ttk.Frame):
         buttons_container.columnconfigure(0, weight=1, uniform='buttons')
         buttons_container.columnconfigure(2, weight=1, uniform='buttons')
 
-        self.back_btn = ttk.Button(buttons_container, text='Cancel')
+        self.cancel_btn = ttk.Button(buttons_container, text='Cancel')
         self.submit_btn = ttk.Button(buttons_container, text='Done')
-        self.back_btn.config(style='cancel.TButton')
+        self.cancel_btn.config(style='cancel.TButton')
         self.submit_btn.config(style='big.TButton')
 
-        self.back_btn.grid(row=0, column=0, sticky='e')
+        self.cancel_btn.grid(row=0, column=0, sticky='e')
         self.submit_btn.grid(row=0, column=1)
 
         # LAYOUT ######################
