@@ -1,5 +1,9 @@
 import tkinter.ttk as ttk
-from src.modules.constants import MIDO_TYPE_TO_VAL1, MIDO_TYPE_TO_VAL2
+from src.modules.constants import (
+        MIDO_TYPE_TO_VAL1,
+        MIDO_TYPE_TO_VAL2,
+        MIDO_TYPE_TO_VALUES,
+)
 
 
 class RuleFormFrame(ttk.Frame):
@@ -98,6 +102,24 @@ class RuleFormFrame(ttk.Frame):
         for name in MIDO_TYPE_TO_VAL2.values():
             self.inputs[name] = self.inputs['val2']
             self.labels[name] = self.labels['val2']
+
+    # INPUTS PROPERTY #########################################################
+
+    @property
+    def form_data(self):
+        # Called by tab_controller for form handling
+        # Filters self.inputs aliases to get right val1 & val2 keys names
+        # Filters empty values
+        form_data = {}
+        form_data['channel'] = self.inputs['channel'].get().replace(' ', '')
+        # Don't remove spaces here since type field is read-only
+        form_data['type'] = self.inputs['type'].get()
+        selected_type = form_data['type']
+        if selected_type:
+            for name in MIDO_TYPE_TO_VALUES[selected_type]:
+                form_data[name] = self.inputs[name].get().replace(' ', '')
+        # Return non-empty values
+        return {k: v for k, v in form_data.items() if v}
 
     # TYPE SELECTION EVENT ####################################################
 
