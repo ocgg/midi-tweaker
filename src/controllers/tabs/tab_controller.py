@@ -29,6 +29,9 @@ class TabController:
         add_rule_btn.config(command=lambda: self.view.display_rule_form())
 
         # RULE FORM ###################
+        # Cancel button
+        cancel_btn = self.form_frame.cancel_btn
+        cancel_btn.config(command=self.view.display_rules_list)
         # Submit button
         submit_btn = self.form_frame.submit_btn
         submit_btn.config(command=self._on_rule_submit)
