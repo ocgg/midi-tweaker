@@ -88,6 +88,10 @@ class ApplicationStyle(ttk.Style):
 
             # BUTTONS #################
 
+            'cancel.TButton': {
+                'padding': 10,
+                **FG_GRAY,
+            },
             'big.TButton': {
                 'padding': (70, 10),
                 **FONT_BOLD,
