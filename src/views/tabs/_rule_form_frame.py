@@ -194,3 +194,7 @@ class RuleFormFrame(ttk.Frame):
             max = FORM_ATTR_RANGE[field][-1]
             error_msg = f'Should be a number or range between {min} and {max}.'
             validation_label.config(text=error_msg)
+
+    def display_global_error(self):
+        error_msg = 'Routed message should be different than the input.'
+        self.global_error_label.config(text=error_msg)
