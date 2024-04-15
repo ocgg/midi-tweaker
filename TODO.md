@@ -16,9 +16,16 @@ a l'air de marcher quand même) et _open_tab du menu donne le même nom à tous
 
 - form validation
 
+- infobox sur le form & autres
+    - ranges sur le label d'attribut
+
+- note sur l'écriture des ranges
+
+- Prise en charge des ranges in/out !!!
+
 ## PETITES REFACTO
 
-...
+- Bouger les validations dans le modèle Rule
 
 ## GROSSES REFACTO
 
