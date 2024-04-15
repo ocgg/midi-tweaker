@@ -20,7 +20,7 @@ class RuleFormFrame(ttk.Frame):
 
         self.inputs = {}
         self.labels = {}
-        self.validation_labels = {}
+        self.field_error_labels = {}
 
         # WIDGETS #########################################
 
@@ -29,37 +29,41 @@ class RuleFormFrame(ttk.Frame):
         title_label = ttk.Label(self, text=title_txt, anchor='center')
         title_label.config(style='bold.TLabel')
 
+        # GLOBAL ERROR LABEL #########
+        self.global_error_label = ttk.Label(self, style='error.TLabel',
+                                            anchor='center')
+
         # CHANNEL INPUT ###############
         channel_label = ttk.Label(self, text='CH', style='bold.gray.TLabel')
         channel_input = ttk.Combobox(self, values=self.RANGE_16, width=15)
-        channel_valid_lbl = ttk.Label(self, style='validation.TLabel')
+        channel_valid_lbl = ttk.Label(self, style='error.TLabel')
         self.labels['channel'] = channel_label
         self.inputs['channel'] = channel_input
-        self.validation_labels['channel'] = channel_valid_lbl
+        self.field_error_labels['channel'] = channel_valid_lbl
 
         # TYPE INPUT ##################
         type_label = ttk.Label(self, text='TYPE', style='bold.gray.TLabel')
         type_input = ttk.Combobox(self, values=self.TYPES, width=15)
-        type_valid_lbl = ttk.Label(self, style='validation.TLabel')
+        type_valid_lbl = ttk.Label(self, style='error.TLabel')
         self.labels['type'] = type_label
         self.inputs['type'] = type_input
-        self.validation_labels['type'] = type_valid_lbl
+        self.field_error_labels['type'] = type_valid_lbl
 
         # VAL 1 INPUT #################
         val1_label = ttk.Label(self, text='VALUE 1', style='bold.gray.TLabel')
         val1_input = ttk.Combobox(self, values=self.RANGE_128, width=15)
-        val1_valid_lbl = ttk.Label(self, style='validation.TLabel')
+        val1_valid_lbl = ttk.Label(self, style='error.TLabel')
         self.labels['val1'] = val1_label
         self.inputs['val1'] = val1_input
-        self.validation_labels['val1'] = val1_valid_lbl
+        self.field_error_labels['val1'] = val1_valid_lbl
 
         # VAL 2 INPUT #################
         val2_label = ttk.Label(self, text='VALUE 2', style='bold.gray.TLabel')
         val2_input = ttk.Combobox(self, values=self.RANGE_128, width=15)
-        val2_valid_lbl = ttk.Label(self, style='validation.TLabel')
+        val2_valid_lbl = ttk.Label(self, style='error.TLabel')
         self.labels['val2'] = val2_label
         self.inputs['val2'] = val2_input
-        self.validation_labels['val2'] = val2_valid_lbl
+        self.field_error_labels['val2'] = val2_valid_lbl
 
         # LEARN BUTTON ################
         self.learn_btn = ttk.Button(self, text='Learn')
@@ -67,31 +71,33 @@ class RuleFormFrame(ttk.Frame):
 
         # LAYOUT ##########################################
 
-        # Title
-        self.rowconfigure(0, weight=0)
-        title_label.grid(row=0, columnspan=2, sticky='ew', pady=20)
+        # TITLE (ROW 0) ###############
+        title_label.grid(row=0, columnspan=2, pady=(20, 0))
 
-        # Inputs
+        # GLOBAL ERROR LABEL (ROW 1) ##
+        self.global_error_label.grid(row=1, columnspan=2, pady=(0, 20))
+
+        # INPUTS (FROM ROW 2) #########
         PADX = {'padx': (0, 10)}
         PADY = {'pady': (5, 15)}
 
         # Labels, column 0
         self.columnconfigure(0, weight=0, minsize=100)
         for i, label in enumerate(self.labels.values(), start=1):
-            label.grid(row=i*2-1, column=0, sticky='e', **PADX)
+            label.grid(row=i*2, column=0, sticky='e', **PADX)
 
         # Inputs, column 1
         self.columnconfigure(1, weight=2)
         for i, input in enumerate(self.inputs.values(), start=1):
-            input.grid(row=i*2-1, column=1, sticky='ew', padx=(0, 20))
+            input.grid(row=i*2, column=1, sticky='ew', padx=(0, 20))
 
         # Validation labels, inter-row
-        for i, label in enumerate(self.validation_labels.values(), start=1):
-            label.grid(row=i*2, column=1, sticky='ew', **PADY)
+        for i, label in enumerate(self.field_error_labels.values(), start=1):
+            label.grid(row=i*2+1, column=1, sticky='ew', **PADY)
 
         # Learn button
-        self.rowconfigure(9, weight=1)
-        self.learn_btn.grid(row=len(self.labels)*2+1, column=0, columnspan=2)
+        self.rowconfigure(10, weight=1)
+        self.learn_btn.grid(row=len(self.labels)*2+2, column=0, columnspan=2)
 
         # INPUTS INIT #####################################
 
@@ -114,12 +120,12 @@ class RuleFormFrame(ttk.Frame):
         for name in MIDO_TYPE_TO_VAL1.values():
             self.inputs[name] = self.inputs['val1']
             self.labels[name] = self.labels['val1']
-            self.validation_labels[name] = self.validation_labels['val1']
+            self.field_error_labels[name] = self.field_error_labels['val1']
 
         for name in MIDO_TYPE_TO_VAL2.values():
             self.inputs[name] = self.inputs['val2']
             self.labels[name] = self.labels['val2']
-            self.validation_labels[name] = self.validation_labels['val2']
+            self.field_error_labels[name] = self.field_error_labels['val2']
 
     # INPUTS PROPERTY #########################################################
 
@@ -173,18 +179,17 @@ class RuleFormFrame(ttk.Frame):
         self.inputs['type'].set(midi_msg.type)
         self.inputs['type'].event_generate('<<ComboboxSelected>>')
 
-        # TODO: verify if it works thanks to aliases:
         for k, v in midi_msg.dict().items():
             if self.inputs.get(k):
                 self.inputs[k].set(v)
 
-    # VALIDATIONS #############################################################
+    # VALIDATIONS ERRORS ######################################################
 
-    def display_errors(self, form_data):
+    def display_field_errors(self, form_data):
         for field, input in form_data.items():
             if input or field == 'type':
                 continue
-            validation_label = self.validation_labels[field]
+            validation_label = self.field_error_labels[field]
             min = FORM_ATTR_RANGE[field][0]
             max = FORM_ATTR_RANGE[field][-1]
             error_msg = f'Should be a number or range between {min} and {max}.'
