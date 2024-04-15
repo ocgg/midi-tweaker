@@ -27,6 +27,18 @@ MIDO_TYPE_TO_VALUES = {
 MIDO_ATTR_RANGE = {
     'type': ['note_on', 'note_off', 'control_change', 'pitchwheel',
              'program_change'],
+    'channel': range(16),
+    'note': range(128),
+    'control': range(128),
+    'velocity': range(128),
+    'value': range(128),
+    'pitch': range(-8192, 8192),
+    'program': range(128),
+}
+
+FORM_ATTR_RANGE = {
+    'type': ['note_on', 'note_off', 'control_change', 'pitchwheel',
+             'program_change'],
     'channel': range(1, 17),
     'note': range(128),
     'control': range(128),
