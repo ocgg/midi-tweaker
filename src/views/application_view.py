@@ -15,16 +15,18 @@ class ApplicationView:
         self.root.config(menu=self.app_menu)
 
         # FRAMES ######################
-
         self.frames['home'] = HomeView(self.root)
         self.frames['tabs_container'] = TabsContainerView(self.root)
 
         # LAYOUT ######################
-
         for frame in self.frames.values():
             frame.grid(row=0, column=0, sticky='nsew')
 
+        """
+        # KEEP THIS ##################
+        # Tab functionality will come back later
         self.frames['home'].tkraise()
+        """
 
     # MAIN LOOP ###############################################################
 

@@ -23,4 +23,9 @@ class TabsContainerController:
         tab['controller'] = tab_controller
 
         # Add tab to the view
+        """
+        # KEEP THIS ##################
+        # Tab functionality will come back later
         self.view.add_and_display_tab(tab_view, tab_name)
+        """
+        self.view.bypass_tabs(tab_view)

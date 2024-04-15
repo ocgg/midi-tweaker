@@ -7,6 +7,13 @@ def main():
     model = ApplicationModel()
     view = ApplicationView()
     controller = ApplicationController(model, view)
+
+    # TEMPORARY #######################
+    # Use it till the return of the mighty tabs functionality
+    # And then delete it and show no mercy
+    controller.tabs_container_controller.add_tab('Useless name')
+    # /TEMPORARY ######################
+
     controller.start()
 
 

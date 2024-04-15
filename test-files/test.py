@@ -22,10 +22,10 @@ def main():
     test_tab['router'].set_midi_port(None, 'in', in_port)
     test_tab['router'].set_midi_port(None, 'out', out_port)
 
-    # rule1_in = {'type': 'note_on', 'velocity': 0}
-    # rule1_out = {'type': 'note_off'}
-    # rule1 = Rule(rule1_in, rule1_out)
-    # test_tab['router'].add_rule(rule1)
+    rule1_in = {'type': 'note_on', 'velocity': 0}
+    rule1_out = {'type': 'note_off'}
+    rule1 = Rule(rule1_in, rule1_out)
+    test_tab['router'].add_rule(rule1)
 
     # rule2_in = {'type': 'control_change', 'control': 1}
     # rule2_out = {'control': 10}
