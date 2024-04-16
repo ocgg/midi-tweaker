@@ -198,3 +198,8 @@ class RuleFormFrame(ttk.Frame):
     def display_global_error(self):
         error_msg = 'Routed message should be different than the input.'
         self.global_error_label.config(text=error_msg)
+
+    def clear_errors(self):
+        for label in self.field_error_labels.values():
+            label.config(text='')
+        self.global_error_label.config(text='')
