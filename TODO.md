@@ -2,8 +2,7 @@
 
 ## PRIORITE
 
-- RANGES
-- Prise en charge des ranges in/out !!!
+- choisir tous les ports d'entrée (même callback pour tous)
 
 - créer un port out virtuel
 
@@ -24,9 +23,13 @@
 - Bouger les validations dans le modèle Rule
 - Refacto les validations
 
+- controllers séparés pour rules list/rule form
+
+
 ## GROSSES REFACTO
 
-...
+- rules_list_view pour implémenter le module constants
+- l'implémenter dans les autres vues concernées
 
 ## DIVERS
 
