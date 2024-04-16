@@ -6,24 +6,26 @@ class Rule:
         self.in_attrs = in_attrs
         self.out_attrs = out_attrs
         self.is_type_conversion = self._check_type_conversion()
+        # TODO: Manage this (in view too)
         # If type conversion, we can isolate type & pop from out_attrs
-        if self.is_type_conversion:
-            self.out_type = self.out_attrs['type']
-            self.out_attrs.pop('type')
+        # if self.is_type_conversion:
+        #     self.out_type = self.out_attrs['type']
+        #     self.out_attrs.pop('type')
 
     def translate(self, msg):
         # TODO: PERFORMANCE IS IMPORTANT HERE
         # benchmark this method
         if self.is_type_conversion:
             # Build new message's first byte (type + channel)
-            new_msg = mido_message(type=self.out_type,
+            new_msg = mido_message(type=self.out_attrs['type'],
                                    channel=msg.channel).bytes()
             # Set other bytes (values)
             new_msg[1:] = msg.bytes()[1:]
             msg = mido_message.from_bytes(new_msg)
 
         for attr, out_val in self.out_attrs.items():
-            # TODO: works only for one value. Manage ranges
+            if attr == 'type':
+                continue
             if isinstance(out_val, range):
                 in_range = self.in_attrs[attr]
                 offset = out_val[0] - in_range[0]
