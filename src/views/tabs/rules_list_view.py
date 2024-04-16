@@ -124,9 +124,10 @@ class RulesListView(ttk.Frame):
         container = ttk.Frame(frame)
         wl = ttk.Label(container, text=name, style='bold.TLabel')
         wl.pack(side='left')
-        if value:
-            wv = ttk.Label(container, text=value, style='bold.gray.TLabel')
-            wv.pack(side='left')
+        if isinstance(value, range):
+            value = f'{value.start}-{value.stop}'
+        wv = ttk.Label(container, text=value, style='bold.gray.TLabel')
+        wv.pack(side='left')
         return container
 
     def _change_attr_name(self, attr_name):
