@@ -27,8 +27,8 @@ class TabRouter:
         new_msg = msg.copy()
         # Apply the rules
         for rule in self.rules:
-            # Rule applies only if it applies with the original message too
-            if rule.apply_to(new_msg) and rule.apply_to(msg):
+            # Rule applies only if it applies with the original message
+            if rule.apply_to(msg):
                 new_msg = rule.translate(new_msg)
 
         if self.midi_out:
