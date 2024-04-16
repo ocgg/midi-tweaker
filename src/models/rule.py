@@ -6,31 +6,42 @@ class Rule:
         self.in_attrs = in_attrs
         self.out_attrs = out_attrs
         self.is_type_conversion = self._check_type_conversion()
+        # If type conversion, we can isolate type & pop from out_attrs
+        if self.is_type_conversion:
+            self.out_type = self.out_attrs['type']
+            self.out_attrs.pop('type')
+        print(in_attrs, out_attrs)
 
     def translate(self, msg):
         # TODO: PERFORMANCE IS IMPORTANT HERE
         # benchmark this method
         if self.is_type_conversion:
-            # Construct new message's first byte (type + channel)
-            new_msg = mido_message(type=self.out_attrs['type'],
+            # Build new message's first byte (type + channel)
+            new_msg = mido_message(type=self.out_type,
                                    channel=msg.channel).bytes()
             # Set other bytes (values)
             new_msg[1:] = msg.bytes()[1:]
             msg = mido_message.from_bytes(new_msg)
 
-        for attr in self.out_attrs.keys():
-            if attr == 'type':
-                continue
+        for attr, out_val in self.out_attrs.items():
+            print(attr, out_val)
             # TODO: works only for one value. Manage ranges
-            out_value = self.out_attrs[attr][0]
-            setattr(msg, attr, out_value)
+            if isinstance(out_val, range):
+                print(attr)
+                in_range = self.in_attrs[attr]
+                offset = out_val[0] - in_range[0]
+                factor = (out_val[-1] - offset) / in_range[-1]
+                out_val = getattr(msg, attr) * factor + offset
+                setattr(msg, attr, round(out_val))
+            else:
+                setattr(msg, attr, out_val[0])
 
         return msg
 
     def apply_to(self, msg):
         # Filter according to in_attrs inputs
         for key in self.in_attrs.keys():
-            if hasattr(msg, key) and getattr(msg, key) == self.in_attrs[key]:
+            if hasattr(msg, key) and getattr(msg, key) in self.in_attrs[key]:
                 continue
             else:
                 return False
