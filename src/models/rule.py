@@ -10,7 +10,6 @@ class Rule:
         if self.is_type_conversion:
             self.out_type = self.out_attrs['type']
             self.out_attrs.pop('type')
-        print(in_attrs, out_attrs)
 
     def translate(self, msg):
         # TODO: PERFORMANCE IS IMPORTANT HERE
@@ -24,10 +23,8 @@ class Rule:
             msg = mido_message.from_bytes(new_msg)
 
         for attr, out_val in self.out_attrs.items():
-            print(attr, out_val)
             # TODO: works only for one value. Manage ranges
             if isinstance(out_val, range):
-                print(attr)
                 in_range = self.in_attrs[attr]
                 offset = out_val[0] - in_range[0]
                 factor = (out_val[-1] - offset) / in_range[-1]
