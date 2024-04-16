@@ -20,7 +20,8 @@ Les fonctionnalités prévues sont (liste non exhaustive) :
 - Ces "tables de modifications" s'appellent les "rules"
 - Pas de limite de nombre de rules (si ce n'est la performance pour du temps réel)
 - Créer des "triggers" pour déclencher l'activation d'une rule sur un message MIDI
-- Un "trigger" peut aussi envoyer d'autres messages custom sur n'importe quel port.
+- Un "trigger" peut aussi envoyer d'autres messages custom sur n'importe quel port
+- ...
 
 ## Objectifs
 
