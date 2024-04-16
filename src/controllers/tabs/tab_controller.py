@@ -1,9 +1,5 @@
 from src.models.rule import Rule
-from src.modules.constants import (
-    MIDO_TYPE_TO_VALUES,
-    MIDO_ATTR_RANGE,
-    FORM_ATTR_RANGE,
-)
+from src.modules.constants import FORM_ATTR_RANGE
 
 
 class TabController:
@@ -81,9 +77,10 @@ class TabController:
         if self.router.learn_is_active:
             self.router.stop_learn('in')
             self.router.stop_learn('out')
+        # Clear error labels
+        self.form_frame.in_form.clear_errors()
+        self.form_frame.out_form.clear_errors()
 
-        # in_form_inputs = self.form_frame.in_form.inputs
-        # out_form_inputs = self.form_frame.out_form.inputs
         in_form_data = self.form_frame.in_form.form_data
         out_form_data = self.form_frame.out_form.form_data
 
@@ -105,30 +102,21 @@ class TabController:
             self.form_frame.out_form.display_field_errors(out_form_data)
 
     def _validate_form_data(self, in_form_data, out_form_data):
-        # VALIDATIONS #####################################
-        # On only one form's part #####
-        # These data are in FORM_ATTR_RANGE constant
-        # - channel between 1 and 16
-        # - pitch between -8192 and 8191
-        # - other values between 0 and 127
-
-        # On both forms ###############
-        # - Out form should not be empty
-        # - ...
-
-        # FIELD VALIDATIONS ###############################
-
-        # Convert and validates data types (values & ranges values)
+        # FIELDS VALIDATIONS ##########
+        # Validations that concern only in or out form independently
+        # VALIDATES: values should be in right range
+        # VALIDATES: ranges should be written in right format
         in_form_data = self._process_form_data(in_form_data)
         out_form_data = self._process_form_data(out_form_data)
 
-        # CHECKPOINT ######################################
+        # CHECKPOINT #################
         is_valid = all(in_form_data.values()) and all(out_form_data.values())
         if not is_valid:
             return (is_valid, in_form_data, out_form_data)
 
-        # BOTH FORMS VALIDATIONS ##########################
-
+        # BOTH FORMS VALIDATIONS ####
+        # VALIDATES: rule should change original input
+        # TODO: VALIDATES: if out is range, in should be range
         # Remove values that are equal in both forms
         key_to_remove = []
         for key, value in in_form_data.items():
@@ -146,7 +134,9 @@ class TabController:
     def _process_form_data(self, form_data):
         # Convert to [int] or to range
         for key, value in form_data.items():
-            if value.isdigit():
+            if key == 'type':
+                continue
+            elif value.isdigit():
                 form_data[key] = self._check_int_conversion(key, value)
             else:
                 form_data[key] = self._check_range_conversion(key, value)
