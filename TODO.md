@@ -13,7 +13,6 @@
 - infobox sur le form & autres
     - ranges sur le label d'attribut
     - textes soulignés/pointillés + curseur hover
-- bouton refresh moche (mettre un label)
 - ports list plus large, MIDI IN/OUT plus serré (50/50)
 - largeur de ports list s'adapte au nom des ports ? on refresh ?
 - scroll bar
