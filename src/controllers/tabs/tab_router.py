@@ -44,7 +44,13 @@ class TabRouter:
         elif source == 'out':
             return mido.get_output_names()
 
-    def set_midi_port(self, event, source, port_name):
+    def close_midi_port(self, source):
+        if source == 'in' and self.midi_in:
+            self.midi_in.close()
+        elif source == 'out' and self.midi_out:
+            self.midi_out.close()
+
+    def set_midi_port(self, source, port_name):
         if source == 'in':
             self._set_input_port(port_name)
         elif source == 'out':
