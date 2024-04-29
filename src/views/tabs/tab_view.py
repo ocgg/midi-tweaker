@@ -1,6 +1,7 @@
 import tkinter.ttk as ttk
 from .rules_list_view import RulesListView
 from .rule_form_view import RuleFormView
+from src.modules.constants import PORT_CHOICE_NONE, PORT_CHOICE_PLACEHOLDER
 
 
 class TabView(ttk.Frame):
@@ -64,7 +65,7 @@ class TabView(ttk.Frame):
 
     def update_midi_ports(self, source, ports):
         combobox = self.midi_bars[source]['ports']['combobox']
-        combobox['values'] = ['Select a MIDI port'] + ports
+        combobox['values'] = [PORT_CHOICE_NONE] + ports
         combobox.current(0)
 
     # PRIVATE #################################################################
@@ -72,12 +73,12 @@ class TabView(ttk.Frame):
     def _create_midi_bar(self, source):
         midi_bar_frame = ttk.Frame(self)
         midi_bar_frame.rowconfigure(0, weight=1)
-        midi_bar_frame.columnconfigure(0, minsize=55)
-        midi_bar_frame.columnconfigure(1, minsize=100)
-        midi_bar_frame.columnconfigure(2, minsize=50)
-        midi_bar_frame.columnconfigure(3, minsize=150)
-        midi_bar_frame.columnconfigure(4, minsize=100)
-        midi_bar_frame.columnconfigure(5, minsize=100)
+        midi_bar_frame.columnconfigure(0, minsize=55)   # 'IN' or 'OUT' label
+        midi_bar_frame.columnconfigure(1, minsize=100)  # Port choice ctnr
+        midi_bar_frame.columnconfigure(2, minsize=50)   # Channel
+        midi_bar_frame.columnconfigure(3, minsize=150)  # Type
+        midi_bar_frame.columnconfigure(4, minsize=100)  # Value 1
+        midi_bar_frame.columnconfigure(5, minsize=100)  # Value 2
 
         midi_bar_data = self.midi_bars[source]
 
@@ -88,8 +89,9 @@ class TabView(ttk.Frame):
         # Port choice
         port_choice_container = ttk.Frame(midi_bar_frame)
         port_choice = ttk.Combobox(port_choice_container, state='readonly')
-        port_choice['values'] = ['Select a MIDI port']
-        port_choice.current(0)
+        port_choice['values'] = [PORT_CHOICE_NONE]
+        # port_choice.current(0)
+        port_choice.set(PORT_CHOICE_PLACEHOLDER)
         refresh_btn = ttk.Button(port_choice_container, text='↺',
                                  style='refresh.TButton')
         midi_bar_data['ports'] = {
@@ -97,12 +99,12 @@ class TabView(ttk.Frame):
             'refresh': refresh_btn
         }
         port_choice.grid(row=0, column=0, sticky='ew')
-        refresh_btn.grid(row=0, column=1, sticky='ew')
+        refresh_btn.grid(row=0, column=1)
 
         # Labels for message data
-        MIDI_DATAS = ['channel', 'type', 'val_1', 'val_2']
+        MIDI_DATA = ['channel', 'type', 'val_1', 'val_2']
 
-        for i, name in enumerate(MIDI_DATAS):
+        for i, name in enumerate(MIDI_DATA):
             container = ttk.Frame(midi_bar_frame)
             container.rowconfigure(0, weight=1)
             container.columnconfigure(1, weight=1)
@@ -120,7 +122,7 @@ class TabView(ttk.Frame):
         # Layout for midi_bar_frame content
         main_label.grid(row=0, column=0, sticky='ew', pady=3)
         port_choice_container.grid(row=0, column=1, sticky='ew', padx=(0, 5))
-        for i, name in enumerate(MIDI_DATAS):
+        for i, name in enumerate(MIDI_DATA):
             container = midi_bar_data[name]['container']
             container.grid(row=0, column=i+2, sticky='ew')
 

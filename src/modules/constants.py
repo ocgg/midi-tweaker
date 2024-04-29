@@ -48,3 +48,8 @@ FORM_ATTR_RANGE = {
     'pitch': range(-8192, 8192),
     'program': range(128),
 }
+
+# MIDI PORTS INPUT VALUES #####################################################
+
+PORT_CHOICE_NONE = 'None'
+PORT_CHOICE_PLACEHOLDER = 'Select a MIDI port'
