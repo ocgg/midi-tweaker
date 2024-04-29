@@ -18,6 +18,9 @@ class ApplicationStyle(ttk.Style):
         for name, options in ttk_styles.items():
             self.configure(name, **options)
 
+        # ttk styles for specific widgets states
+        self.map('refresh.TButton', borderwidth=[('focus', -1)])
+
         # tk styles
         # This is in case of needing to change tkinter.tk styles
         # tk_styles = self._get_tk_styles()
@@ -97,9 +100,10 @@ class ApplicationStyle(ttk.Style):
                 **FONT_BOLD,
             },
             'refresh.TButton': {
-                'padding': 0,
+                'padding': -1,
                 **FONT_VERY_BIG,
                 'width': 2,
+                'borderwidth': 0,
             },
 
             # Learn button
