@@ -7,6 +7,7 @@ from src.modules.constants import MIDO_TYPES
 class TabRouter:
     def __init__(self, tab, port_name):
         self.tab_view = tab
+
         self.midi_in = []
         self.midi_out = None
         self.rules = []
@@ -93,22 +94,16 @@ class TabRouter:
             messagebox.showerror("Error", "No MIDI input port selected")
             return
 
-        if source == 'in':
-            form_frame = self.tab_view.frames['form'].in_form
-        elif source == 'out':
-            form_frame = self.tab_view.frames['form'].out_form
+        form_frame = self.tab_view.frames['form'].forms[source]
 
         for port in self.midi_in:
             port.callback = lambda msg: self._midi_learn_callback(
-                                                msg, form_frame)
+                msg, form_frame)
         self.learn_is_active = True
         form_frame.set_learn_btn_active()
 
     def stop_learn(self, source):
-        if source == 'in':
-            form_frame = self.tab_view.frames['form'].in_form
-        elif source == 'out':
-            form_frame = self.tab_view.frames['form'].out_form
+        form_frame = self.tab_view.frames['form'].forms[source]
 
         for port in self.midi_in:
             port.callback = self._midi_in_callback

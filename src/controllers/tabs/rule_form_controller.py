@@ -6,6 +6,8 @@ class RuleFormController:
     def __init__(self, tab_controller, view, router):
         self.tab_controller = tab_controller
         self.view = view
+        self.in_form = view.forms['in']
+        self.out_form = view.forms['out']
         self.router = router
         self._bind()
 
@@ -19,8 +21,8 @@ class RuleFormController:
         submit_btn = self.view.submit_btn
         submit_btn.config(command=self._on_rule_submit)
         # Learn buttons
-        in_learn_btn = self.view.in_form.learn_btn
-        out_learn_btn = self.view.out_form.learn_btn
+        in_learn_btn = self.in_form.learn_btn
+        out_learn_btn = self.out_form.learn_btn
         in_learn_btn.config(command=lambda:
                             self._on_midi_learn('in', in_learn_btn))
         out_learn_btn.config(command=lambda:
@@ -48,11 +50,11 @@ class RuleFormController:
             self.router.stop_learn('in')
             self.router.stop_learn('out')
         # Clear error labels
-        self.view.in_form.clear_errors()
-        self.view.out_form.clear_errors()
+        self.in_form.clear_errors()
+        self.out_form.clear_errors()
 
-        in_form_data = self.view.in_form.form_data
-        out_form_data = self.view.out_form.form_data
+        in_form_data = self.in_form.form_data
+        out_form_data = self.out_form.form_data
 
         # validate form data
         validation = self._validate_form_data(in_form_data, out_form_data)
@@ -63,13 +65,14 @@ class RuleFormController:
         if is_valid:
             rule = Rule(in_form_data, out_form_data)
             self.router.add_rule(rule)
+            self.view.clear_forms()
             self.tab_controller.update_rules_list()
             self.tab_controller.show_rules_list()
         elif not out_form_data:
-            self.view.out_form.display_global_error()
+            self.out_form.display_global_error()
         else:
-            self.view.in_form.display_field_errors(in_form_data)
-            self.view.out_form.display_field_errors(out_form_data)
+            self.in_form.display_field_errors(in_form_data)
+            self.out_form.display_field_errors(out_form_data)
 
     # FORM VALIDATION #########################################################
 

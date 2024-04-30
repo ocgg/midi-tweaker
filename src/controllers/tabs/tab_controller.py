@@ -7,7 +7,6 @@ class TabController:
     def __init__(self, tab_view, tab_router):
         self.view = tab_view
         self.router = tab_router
-        self.form_frame = self.view.frames['form']
 
         self.rules_list_controller = RulesListController(
             tab_controller=self,

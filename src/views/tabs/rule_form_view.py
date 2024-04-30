@@ -6,11 +6,12 @@ class RuleFormView(ttk.Frame):
     def __init__(self, master):
         super().__init__(master)
 
+        self.forms = {}
         # IN FORM #####################
-        self.in_form = RuleFormFrame(self, 'in')
+        self.forms['in'] = RuleFormFrame(self, 'in')
 
         # OUT FORM ####################
-        self.out_form = RuleFormFrame(self, 'out')
+        self.forms['out'] = RuleFormFrame(self, 'out')
 
         # SEPARATOR ###################
         separator = ttk.Frame(self)
@@ -46,10 +47,14 @@ class RuleFormView(ttk.Frame):
         self.rowconfigure(1, weight=1)
 
         # Row 0
-        self.in_form.grid(row=0, column=0, sticky='nsew')
+        self.forms['in'].grid(row=0, column=0, sticky='nsew')
         separator.grid(row=0, column=1, sticky='ns')
-        self.out_form.grid(row=0, column=2, sticky='nsew')
+        self.forms['out'].grid(row=0, column=2, sticky='nsew')
 
         # Row 1
         buttons_container.grid(row=1, column=0, columnspan=3,
                                sticky='ew', pady=(0, 10))
+
+    def clear_forms(self):
+        self.forms['in'].clear_form()
+        self.forms['out'].clear_form()

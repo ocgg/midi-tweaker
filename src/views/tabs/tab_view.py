@@ -80,8 +80,8 @@ class TabView(ttk.Frame):
     def _create_midi_bar(self, source):
         midi_bar_frame = ttk.Frame(self)
         midi_bar_frame.rowconfigure(0, weight=1)
-        midi_bar_frame.columnconfigure(0, minsize=55)   # 'IN' or 'OUT' label
-        midi_bar_frame.columnconfigure(1, minsize=100)  # Port choice ctnr
+        midi_bar_frame.columnconfigure(0, minsize=55)   # 'IN'/'OUT' label
+        midi_bar_frame.columnconfigure(1, minsize=100)  # Port choice container
         midi_bar_frame.columnconfigure(2, minsize=50)   # Channel
         midi_bar_frame.columnconfigure(3, minsize=150)  # Type
         midi_bar_frame.columnconfigure(4, minsize=100)  # Value 1
