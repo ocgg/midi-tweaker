@@ -16,13 +16,13 @@ def main():
     controller.tabs_container_controller.add_tab('Useless name')
     test_tab = controller.tabs_container_controller.tabs['Useless name']
 
-    in_port = mido.get_input_names()[1]
-    out_port = mido.get_output_names()[1]
+    in_port = mido.get_input_names()[0]
+    out_port = mido.get_output_names()[0]
 
     test_tab['view'].midi_bars['in']['ports']['combobox'].set(in_port)
     test_tab['view'].midi_bars['out']['ports']['combobox'].set(out_port)
-    test_tab['router'].set_midi_port(None, 'in', in_port)
-    test_tab['router'].set_midi_port(None, 'out', out_port)
+    test_tab['router'].set_midi_port('in', in_port)
+    test_tab['router'].set_midi_port('out', out_port)
 
     range_rule_in = {'value': range(11)}
     range_rule_out = {'value': range(101)}
