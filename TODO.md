@@ -24,7 +24,6 @@
 
 - controllers séparés pour rules list/rule form
 
-
 ## GROSSES REFACTO
 
 - rules_list_view pour implémenter le module constants
@@ -66,7 +65,7 @@
 ## PLUS TARD (TABS FEATURES)
 
 - tab name : actuellement 2 tabs ne DOIVENT pas avoir le même nom (quoique ça
-a l'air de marcher quand même) et _open_tab du menu donne le même nom à tous
+a l'air de marcher quand même) et \_open_tab du menu donne le même nom à tous
 
 - fermer un onglet
 - Renommer un onglet
