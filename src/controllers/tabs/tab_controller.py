@@ -1,5 +1,9 @@
 from src.models.rule import Rule
-from src.modules.constants import FORM_ATTR_RANGE, PORT_CHOICE_NONE
+from src.modules.constants import (
+    FORM_ATTR_RANGE,
+    PORT_CHOICE_NONE,
+    PORT_CHOICE_ALL
+)
 
 
 class TabController:
@@ -43,11 +47,9 @@ class TabController:
         # Set midi ports list for comboboxes
         midi_ports = self.router.get_midi_ports(source)
         combobox = self.view.midi_bars[source]['ports']['combobox']
-        combobox['values'] += tuple(midi_ports)
-        combobox.bind(
-            '<<ComboboxSelected>>',
-            lambda event: self._on_port_selected(source, combobox)
-        )
+        self.view.update_midi_ports(source, midi_ports)
+        combobox.bind('<<ComboboxSelected>>',
+                      lambda event: self._on_port_selected(source, combobox))
         # Refresh button
         refresh_btn = self.view.midi_bars[source]['ports']['refresh']
         refresh_btn.config(command=lambda: self._on_ports_refresh(source))
@@ -68,8 +70,10 @@ class TabController:
     # MIDI bar ports ######################################
     def _on_port_selected(self, source, combobox):
         port_name = combobox.get()
-        if port_name == PORT_CHOICE_NONE:
-            self.router.close_midi_port(source)
+        if port_name == PORT_CHOICE_ALL:
+            self.router.set_input_ports_all()
+        elif port_name == PORT_CHOICE_NONE:
+            self.router.close_midi_ports(source)
         else:
             self.router.set_midi_port(source, port_name)
 
