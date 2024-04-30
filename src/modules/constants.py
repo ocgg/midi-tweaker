@@ -1,5 +1,8 @@
 # MIDO TYPES NAME TO MIDO VALUE NAME ##########################################
 
+MIDO_TYPES = ['note_on', 'note_off', 'control_change', 'program_change',
+              'pitchwheel']
+
 MIDO_TYPE_TO_VAL1 = {
     'note_on': 'note',
     'note_off': 'note',
@@ -52,4 +55,5 @@ FORM_ATTR_RANGE = {
 # MIDI PORTS INPUT VALUES #####################################################
 
 PORT_CHOICE_NONE = 'None'
+PORT_CHOICE_ALL = 'All'
 PORT_CHOICE_PLACEHOLDER = 'Select a MIDI port'
