@@ -14,4 +14,4 @@ class RulesListController:
         # Add rule button
         add_rule_btn = self.view.add_rule_btn
         add_rule_btn.config(command=lambda:
-                            self.tab_controller.view.display_rule_form())
+                            self.tab_controller.show_rule_form())

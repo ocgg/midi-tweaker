@@ -1,10 +1,6 @@
-from src.models.rule import Rule
 from .rules_list_controller import RulesListController
-from src.modules.constants import (
-    FORM_ATTR_RANGE,
-    PORT_CHOICE_NONE,
-    PORT_CHOICE_ALL,
-)
+from .rule_form_controller import RuleFormController
+from src.modules.constants import PORT_CHOICE_NONE, PORT_CHOICE_ALL
 
 
 class TabController:
@@ -18,7 +14,23 @@ class TabController:
             view=self.view.frames['list'],
             router=tab_router)
 
+        self.rule_form_controller = RuleFormController(
+            tab_controller=self,
+            view=self.view.frames['form'],
+            router=tab_router)
+
         self._bind()
+
+    # LIST/FORM COORDINATION ##################################################
+
+    def update_rules_list(self):
+        self.rules_list_controller.update_list()
+
+    def show_rules_list(self):
+        self.view.display_rules_list()
+
+    def show_rule_form(self):
+        self.view.display_rule_form()
 
     # BINDINGS ################################################################
 
@@ -27,21 +39,6 @@ class TabController:
         # Port list comboboxes & refresh buttons
         self._bind_midi_bar('in')
         self._bind_midi_bar('out')
-
-        # RULE FORM ###################
-        # Cancel button
-        cancel_btn = self.form_frame.cancel_btn
-        cancel_btn.config(command=self.view.display_rules_list)
-        # Submit button
-        submit_btn = self.form_frame.submit_btn
-        submit_btn.config(command=self._on_rule_submit)
-        # Learn buttons
-        in_learn_btn = self.form_frame.in_form.learn_btn
-        out_learn_btn = self.form_frame.out_form.learn_btn
-        in_learn_btn.config(command=lambda:
-                            self._on_midi_learn('in', in_learn_btn))
-        out_learn_btn.config(command=lambda:
-                             self._on_midi_learn('out', out_learn_btn))
 
     def _bind_midi_bar(self, source):
         # Set midi ports list for comboboxes
@@ -56,17 +53,6 @@ class TabController:
 
     # CALLBACKS ###############################################################
 
-    # MIDI Learn ##########################################
-    def _on_midi_learn(self, source, learn_btn):
-        self.router.learn(source)
-        learn_btn.config(command=lambda:
-                         self._on_stop_midi_learn(source, learn_btn))
-
-    def _on_stop_midi_learn(self, source, learn_btn):
-        self.router.stop_learn(source)
-        learn_btn.config(command=lambda:
-                         self._on_midi_learn(source, learn_btn))
-
     # MIDI bar ports ######################################
     def _on_port_selected(self, source, combobox):
         port_name = combobox.get()
@@ -80,101 +66,3 @@ class TabController:
     def _on_ports_refresh(self, source):
         midi_ports = self.router.get_midi_ports(source)
         self.view.update_midi_ports(source, midi_ports)
-
-    # Rule form submit ####################################
-    def _on_rule_submit(self):
-        # Stop midi_learn if active
-        if self.router.learn_is_active:
-            self.router.stop_learn('in')
-            self.router.stop_learn('out')
-        # Clear error labels
-        self.form_frame.in_form.clear_errors()
-        self.form_frame.out_form.clear_errors()
-
-        in_form_data = self.form_frame.in_form.form_data
-        out_form_data = self.form_frame.out_form.form_data
-
-        # validate form data
-        validation = self._validate_form_data(in_form_data, out_form_data)
-        is_valid = validation[0]
-        in_form_data = validation[1]
-        out_form_data = validation[2]
-
-        if is_valid:
-            rule = Rule(in_form_data, out_form_data)
-            self.router.add_rule(rule)
-            self.rules_list_controller.update_list()
-            self.view.display_rules_list()
-        elif not out_form_data:
-            self.form_frame.out_form.display_global_error()
-        else:
-            self.form_frame.in_form.display_field_errors(in_form_data)
-            self.form_frame.out_form.display_field_errors(out_form_data)
-
-    def _validate_form_data(self, in_form_data, out_form_data):
-        # FIELDS VALIDATIONS ##########
-        # Validations that concern only in or out form independently
-        # VALIDATES: values should be in right range
-        # VALIDATES: ranges should be written in right format
-        in_form_data = self._process_form_data(in_form_data)
-        out_form_data = self._process_form_data(out_form_data)
-
-        # CHECKPOINT #################
-        is_valid = all(in_form_data.values()) and all(out_form_data.values())
-        if not is_valid:
-            return (is_valid, in_form_data, out_form_data)
-
-        # BOTH FORMS VALIDATIONS ####
-        # VALIDATES: rule should change original input
-        # TODO: VALIDATES: if out is range, in should be range
-        # Remove values that are equal in both forms
-        key_to_remove = []
-        for key, value in in_form_data.items():
-            if out_form_data.get(key) and value == out_form_data[key]:
-                key_to_remove.append(key)
-        for key in key_to_remove:
-            del in_form_data[key]
-            del out_form_data[key]
-
-        if not out_form_data:
-            is_valid = False
-
-        return (is_valid, in_form_data, out_form_data)
-
-    def _process_form_data(self, form_data):
-        # Convert to [int] or to range
-        for key, value in form_data.items():
-            if key == 'type':
-                continue
-            elif value.isdigit():
-                form_data[key] = self._check_int_conversion(key, value)
-            else:
-                form_data[key] = self._check_range_conversion(key, value)
-        return form_data
-
-    def _check_int_conversion(self, key, value):
-        value = int(value)
-        if value in FORM_ATTR_RANGE[key]:
-            return [value]
-        else:
-            return False
-
-    def _check_range_conversion(self, key, value):
-        try:
-            range_vals = list(map(int, value.split('-')))
-            min = range_vals[0]
-            max = range_vals[1]
-            # Let the user have twisted logic
-            min, max = (min, max) if min < max else (max, min)
-            min_is_valid = min in FORM_ATTR_RANGE[key]
-            max_is_valid = max in FORM_ATTR_RANGE[key]
-            # Do not let the user be irrational
-            if not min_is_valid or not max_is_valid:
-                return False
-            # Let the user be distracted
-            elif min == max:
-                return [min]
-            else:
-                return range(min, max + 1)
-        except ValueError:
-            return False
