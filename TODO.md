@@ -22,8 +22,6 @@
 - Bouger les validations dans le modèle Rule
 - Refacto les validations
 
-- controllers séparés pour rules list/rule form
-
 ## GROSSES REFACTO
 
 - rules_list_view pour implémenter le module constants
@@ -45,8 +43,6 @@
 
 - menu : Aide, A propos, etc...
 
-- pouvoir choisir tous les ports d'entrée MIDI en même temps
-
 ## PLUS TARD (RULES FEATURES)
 
 - GLISSER/DEPOSER les rules
@@ -67,5 +63,5 @@
 - tab name : actuellement 2 tabs ne DOIVENT pas avoir le même nom (quoique ça
 a l'air de marcher quand même) et \_open_tab du menu donne le même nom à tous
 
-- fermer un onglet
+- fermer un onglet (custom ttk.Notebook)
 - Renommer un onglet
