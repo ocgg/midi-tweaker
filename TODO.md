@@ -2,7 +2,7 @@
 
 ## PRIORITE
 
-- choisir tous les ports d'entrée (même callback pour tous)
+- A TESTER: port choice ALL
 
 - créer un port out virtuel
 
