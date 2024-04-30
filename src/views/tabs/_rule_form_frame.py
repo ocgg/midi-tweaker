@@ -199,7 +199,14 @@ class RuleFormFrame(ttk.Frame):
         error_msg = 'Routed message should be different than the input.'
         self.global_error_label.config(text=error_msg)
 
+    # CLEAR ###################################################################
+
     def clear_errors(self):
         for label in self.field_error_labels.values():
             label.config(text='')
         self.global_error_label.config(text='')
+
+    def clear_form(self):
+        for input in self.inputs.values():
+            input.set('')
+        self.inputs['type'].event_generate('<<ComboboxSelected>>')
