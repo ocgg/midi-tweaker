@@ -1,7 +1,11 @@
 import tkinter.ttk as ttk
 from .rules_list_view import RulesListView
 from .rule_form_view import RuleFormView
-from src.modules.constants import PORT_CHOICE_NONE, PORT_CHOICE_PLACEHOLDER
+from src.modules.constants import (
+    PORT_CHOICE_NONE,
+    PORT_CHOICE_ALL,
+    PORT_CHOICE_PLACEHOLDER,
+)
 
 
 class TabView(ttk.Frame):
@@ -65,8 +69,11 @@ class TabView(ttk.Frame):
 
     def update_midi_ports(self, source, ports):
         combobox = self.midi_bars[source]['ports']['combobox']
-        combobox['values'] = [PORT_CHOICE_NONE] + ports
-        combobox.current(0)
+        combobox['values'] = (PORT_CHOICE_NONE,)
+        if source == 'in':
+            combobox['values'] += (PORT_CHOICE_ALL,)
+        combobox['values'] += tuple(ports)
+        combobox.set(PORT_CHOICE_PLACEHOLDER)
 
     # PRIVATE #################################################################
 
@@ -89,9 +96,6 @@ class TabView(ttk.Frame):
         # Port choice
         port_choice_container = ttk.Frame(midi_bar_frame)
         port_choice = ttk.Combobox(port_choice_container, state='readonly')
-        port_choice['values'] = [PORT_CHOICE_NONE]
-        # port_choice.current(0)
-        port_choice.set(PORT_CHOICE_PLACEHOLDER)
         refresh_btn = ttk.Button(port_choice_container, text='↺',
                                  style='refresh.TButton')
         midi_bar_data['ports'] = {
