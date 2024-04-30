@@ -1,8 +1,9 @@
 from src.models.rule import Rule
+from .rules_list_controller import RulesListController
 from src.modules.constants import (
     FORM_ATTR_RANGE,
     PORT_CHOICE_NONE,
-    PORT_CHOICE_ALL
+    PORT_CHOICE_ALL,
 )
 
 
@@ -11,7 +12,11 @@ class TabController:
         self.view = tab_view
         self.router = tab_router
         self.form_frame = self.view.frames['form']
-        self.list_frame = self.view.frames['list']
+
+        self.rules_list_controller = RulesListController(
+            tab_controller=self,
+            view=self.view.frames['list'],
+            router=tab_router)
 
         self._bind()
 
@@ -22,11 +27,6 @@ class TabController:
         # Port list comboboxes & refresh buttons
         self._bind_midi_bar('in')
         self._bind_midi_bar('out')
-
-        # RULE LIST ###################
-        # Add rule button
-        add_rule_btn = self.list_frame.add_rule_btn
-        add_rule_btn.config(command=lambda: self.view.display_rule_form())
 
         # RULE FORM ###################
         # Cancel button
@@ -103,7 +103,7 @@ class TabController:
         if is_valid:
             rule = Rule(in_form_data, out_form_data)
             self.router.add_rule(rule)
-            self.list_frame.update_list(self.router.rules)
+            self.rules_list_controller.update_list()
             self.view.display_rules_list()
         elif not out_form_data:
             self.form_frame.out_form.display_global_error()
