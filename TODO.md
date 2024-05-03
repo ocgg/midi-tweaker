@@ -8,6 +8,8 @@
 
 - RANGES: si range en out et rien en in, range_in = rangemin-rangemax
 
+- REECRIRE Rules list plus performant
+
 - FRONT:
 - note au user sur l'écriture des ranges
 - infobox sur le form & autres
