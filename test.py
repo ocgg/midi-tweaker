@@ -49,7 +49,8 @@ def main():
     rule4 = Rule(rule4_in, rule4_out)
     test_tab['router'].add_rule(rule4)
 
-    test_tab['view'].frames['list'].update_list(test_tab['router'].rules)
+    # test_tab['view'].frames['list'].update_list(test_tab['router'].rules)
+    test_tab['controller'].update_rules_list()
 
     test_tab['view'].display_rules_list()
     # test_tab['view'].display_rule_form()
