@@ -19,7 +19,7 @@ class ApplicationStyle(ttk.Style):
             self.configure(name, **options)
 
         # ttk styles for specific widgets states
-        self.map('refresh.TButton', borderwidth=[('focus', -1)])
+        self.map('icon.TButton', borderwidth=[('focus', -1)])
 
         # tk styles
         # This is in case of needing to change tkinter.tk styles
@@ -99,8 +99,8 @@ class ApplicationStyle(ttk.Style):
                 'padding': (70, 10),
                 **FONT_BOLD,
             },
-            'refresh.TButton': {
-                'padding': -1,
+            'icon.TButton': {
+                # 'padding': -1,
                 **FONT_VERY_BIG,
                 'width': 2,
                 'borderwidth': 0,

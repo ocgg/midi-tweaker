@@ -97,7 +97,7 @@ class TabView(ttk.Frame):
         port_choice_container = ttk.Frame(midi_bar_frame)
         port_choice = ttk.Combobox(port_choice_container, state='readonly')
         refresh_btn = ttk.Button(port_choice_container, text='↺',
-                                 style='refresh.TButton')
+                                 style='icon.TButton')
         midi_bar_data['ports'] = {
             'combobox': port_choice,
             'refresh': refresh_btn

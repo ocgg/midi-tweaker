@@ -5,7 +5,7 @@ class RulesListView(ttk.Frame):
     def __init__(self, tab_view):
         super().__init__(tab_view)
 
-        self.widgets = {}
+        self.rules_controls = []
 
         # Rules container
         self.rules_frame = ttk.Frame(self)
@@ -22,36 +22,47 @@ class RulesListView(ttk.Frame):
                                     style='small.TLabel')
 
         # LAYOUT ######################
+
+        # Rules container
         self.rules_frame.columnconfigure(0, weight=1, uniform='rule')
-        self.rules_frame.columnconfigure(1, weight=0)
+        # self.rules_frame.columnconfigure(1, weight=0)
         self.rules_frame.columnconfigure(2, weight=1, uniform='rule')
+        # self.rules_frame.columnconfigure(3, weight=0)
 
-        self._packer()
+        # Self
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
 
-    # PACKER ##################################################################
+        self.rules_frame.grid(row=0, column=0, sticky='nsew', padx=70)
+        self.add_rule_btn.grid(row=1, column=0, pady=(0, 15))
+        self.note_label.grid(row=2, column=0, pady=(0, 15))
 
-    def _packer(self):
-        self.rules_frame.pack(fill='x', padx=70)
-        self.note_label.pack(side='bottom')
-        self.add_rule_btn.pack(side='bottom', pady=(0, 15))
+    # RULES LIST ##############################################################
 
     def update_list(self, rules):
         # Clear list
-        self.add_rule_btn.pack_forget()
-        self.note_label.pack_forget()
-        self.rules_frame.pack_forget()
         for widget in self.rules_frame.winfo_children():
             widget.destroy()
+        self.rules_controls = []
+
         # Rebuild list
         for i, rule in enumerate(rules):
             rule_elts = self._build_rule(rule)
+
             rule_elts['in_rule'].grid(row=i*2, column=0, sticky='e')
             rule_elts['separator'].grid(row=i*2, column=1, pady=8)
             rule_elts['out_rule'].grid(row=i*2, column=2, sticky='w')
-            between_rules = ttk.Frame(self.rules_frame, style='light.TFrame')
-            between_rules.grid(row=i*2+1, column=0, columnspan=3, sticky='ew')
 
-        self._packer()
+            delete_btn = ttk.Button(self.rules_frame, text='⨯',
+                                    style='icon.TButton')
+            delete_btn.grid(row=i*2, column=3)
+
+            rule_controls = {'delete_btn': delete_btn}
+            self.rules_controls.append(rule_controls)
+            # TODO: edit rule
+
+            hor_separator = ttk.Frame(self.rules_frame, style='light.TFrame')
+            hor_separator.grid(row=i*2+1, column=0, columnspan=3, sticky='ew')
 
     # PRIVATE #################################################################
 
