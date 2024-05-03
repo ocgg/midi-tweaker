@@ -1,36 +1,41 @@
-# MIDO TYPES NAME TO MIDO VALUE NAME ##########################################
+# MIDO VALUES HANDLING ########################################################
 
-MIDO_TYPES = ['note_on', 'note_off', 'control_change', 'program_change',
-              'pitchwheel']
+# MIDO ATTRIBUTES NAMES ###############
 
-MIDO_TYPE_TO_VAL1 = {
-    'note_on': 'note',
-    'note_off': 'note',
-    'control_change': 'control',
-    'pitchwheel': 'pitch',
-    'program_change': 'program',
-    'sysex': 'data',
+MIDO_TYPES = [
+    'note_on',
+    'note_off',
+    'control_change',
+    'pitchwheel',
+    'program_change',
+]
+
+MIDO_BYTE1_NAMES = ['note', 'control', 'pitch', 'program', 'data']
+
+MIDO_BYTE2_NAMES = ['velocity', 'value']
+
+MIDO_TYPE_TO_BYTES_NAMES = {
+    'note_on': {
+        'byte1': 'note',
+        'byte2': 'velocity'
+    },
+    'note_off': {
+        'byte1': 'note',
+        'byte2': 'velocity'
+    },
+    'control_change': {
+        'byte1': 'control',
+        'byte2': 'value'
+    },
+    'pitchwheel': {'byte1': 'pitch'},
+    'program_change': {'byte1': 'program'},
+    'sysex': {'byte1': 'data'},
 }
 
-MIDO_TYPE_TO_VAL2 = {
-    'note_on': 'velocity',
-    'note_off': 'velocity',
-    'control_change': 'value',
-}
+# MIDO ATTRIBUTES RANGES ##############
 
-MIDO_TYPE_TO_VALUES = {
-    'note_on': ['note', 'velocity'],
-    'note_off': ['note', 'velocity'],
-    'control_change': ['control', 'value'],
-    'pitchwheel': ['pitch'],
-    'program_change': ['program'],
-    'sysex': ['data'],
-}
-
-# TODO: useless?
 MIDO_ATTR_RANGE = {
-    'type': ['note_on', 'note_off', 'control_change', 'pitchwheel',
-             'program_change'],
+    'type': MIDO_TYPES,
     'channel': range(16),
     'note': range(128),
     'control': range(128),
@@ -39,6 +44,8 @@ MIDO_ATTR_RANGE = {
     'pitch': range(-8192, 8192),
     'program': range(128),
 }
+
+# FORM MANAGEMENT #####################
 
 FORM_ATTR_RANGE = {
     'type': ['note_on', 'note_off', 'control_change', 'pitchwheel',
@@ -52,7 +59,30 @@ FORM_ATTR_RANGE = {
     'program': range(128),
 }
 
-# MIDI PORTS INPUT VALUES #####################################################
+# VIEW  #######################################################################
+
+# MIDO ATTRIBUTES TO TEXT #############
+
+MIDO_ATTR_TO_LABEL = {
+    'type': 'TYPE',
+    'channel': 'CH',
+    # Types
+    'note_on': 'NOTEON',
+    'note_off': 'NOTEOFF',
+    'control_change': 'CC',
+    'pitchwheel': 'PITCH',
+    'program_change': 'PROGRAM',
+    # Byte 1
+    'note': 'NOTE',
+    'control': 'CC',
+    'pitch': 'PITCH',
+    'program': 'PROGRAM',
+    # Byte 2
+    'velocity': 'velo',
+    'value': 'val',
+}
+
+# MIDI PORTS INPUT VALUES #############
 
 PORT_CHOICE_NONE = 'None'
 PORT_CHOICE_ALL = 'All'

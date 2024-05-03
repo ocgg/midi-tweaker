@@ -1,9 +1,9 @@
 import tkinter.ttk as ttk
 from src.modules.constants import (
-        MIDO_TYPE_TO_VAL1,
-        MIDO_TYPE_TO_VAL2,
-        MIDO_TYPE_TO_VALUES,
-        FORM_ATTR_RANGE,
+    MIDO_BYTE1_NAMES,
+    MIDO_BYTE2_NAMES,
+    MIDO_TYPE_TO_BYTES_NAMES,
+    FORM_ATTR_RANGE,
 )
 
 
@@ -117,12 +117,12 @@ class RuleFormFrame(ttk.Frame):
         # ALIASES #########################################
         # These are for easier management of values 1 & 2 names
 
-        for name in MIDO_TYPE_TO_VAL1.values():
+        for name in MIDO_BYTE1_NAMES:
             self.inputs[name] = self.inputs['val1']
             self.labels[name] = self.labels['val1']
             self.field_error_labels[name] = self.field_error_labels['val1']
 
-        for name in MIDO_TYPE_TO_VAL2.values():
+        for name in MIDO_BYTE2_NAMES:
             self.inputs[name] = self.inputs['val2']
             self.labels[name] = self.labels['val2']
             self.field_error_labels[name] = self.field_error_labels['val2']
@@ -140,7 +140,7 @@ class RuleFormFrame(ttk.Frame):
         form_data['type'] = self.inputs['type'].get()
         selected_type = form_data['type']
         if selected_type:
-            for name in MIDO_TYPE_TO_VALUES[selected_type]:
+            for name in MIDO_TYPE_TO_BYTES_NAMES[selected_type].values():
                 form_data[name] = self.inputs[name].get().replace(' ', '')
         # Return non-empty values
         return {k: v for k, v in form_data.items() if v}
@@ -150,7 +150,7 @@ class RuleFormFrame(ttk.Frame):
     def _on_type_selected(self, event):
         selected_type = event.widget.get()
 
-        val1_name = MIDO_TYPE_TO_VAL1.get(selected_type)
+        val1_name = MIDO_TYPE_TO_BYTES_NAMES.get(selected_type)['byte1']
         if val1_name:
             self.labels[val1_name].config(text=val1_name.upper())
             self.inputs[val1_name].config(state='normal')
@@ -158,7 +158,7 @@ class RuleFormFrame(ttk.Frame):
             self.labels['val1'].config(text='VALUE 1')
             self.inputs['val1'].config(state='disabled')
 
-        val2_name = MIDO_TYPE_TO_VAL2.get(selected_type)
+        val2_name = MIDO_TYPE_TO_BYTES_NAMES.get(selected_type)['byte2']
         if val2_name:
             self.labels[val2_name].config(text=val2_name.upper())
             self.inputs[val2_name].config(state='normal')
