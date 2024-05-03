@@ -6,7 +6,7 @@
 
 - créer un port out virtuel
 
-- supprimer une rule
+- RANGES: si range en out et rien en in, range_in = rangemin-rangemax
 
 - FRONT:
 - note au user sur l'écriture des ranges
@@ -24,7 +24,7 @@
 
 ## GROSSES REFACTO
 
-- rules_list_view pour implémenter le module constants
+- rules_list_view pour implémenter le module constants -> partie "update list"
 - l'implémenter dans les autres vues concernées
 
 ## DIVERS
@@ -38,8 +38,6 @@
 - ECRIRE DES TESTS
 
 - SHORTCUTS CLAVIER
-
-- choisir d'afficher ou non les MIDI IN & OUT
 
 - menu : Aide, A propos, etc...
 
@@ -65,3 +63,7 @@ a l'air de marcher quand même) et \_open_tab du menu donne le même nom à tous
 
 - fermer un onglet (custom ttk.Notebook)
 - Renommer un onglet
+
+## COULD HAVE
+
+- choisir d'afficher ou non les MIDI IN & OUT
