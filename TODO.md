@@ -32,6 +32,10 @@
 
 ## GROSSES REFACTO
 
+- VALIDATIONS:
+    - D'abord convertir les valeurs (controller)
+    - Ensuite valider le bordel (model)
+
 - rules_list_view pour implémenter le module constants -> partie "update list"
 - l'implémenter dans les autres vues concernées
 
