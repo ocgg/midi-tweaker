@@ -22,6 +22,7 @@
 ## SECONDAIRE
 
 - File/Reset
+- Edit rule
 
 ## PETITES REFACTO
 
