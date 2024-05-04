@@ -149,6 +149,8 @@ class RuleFormFrame(ttk.Frame):
 
     def _on_type_selected(self, event):
         selected_type = event.widget.get()
+        if not selected_type:
+            return
 
         val1_name = MIDO_TYPE_TO_BYTES_NAMES.get(selected_type)['byte1']
         if val1_name:
