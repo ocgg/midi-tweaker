@@ -6,7 +6,7 @@
 
 - créer un port out virtuel
 
-- RANGES: si range en out et rien en in, range_in = rangemin-rangemax
+- RANGES: si range out et rien en in, range_in = rangetstar-rangestop
 
 - REECRIRE Rules list plus performant
 
@@ -18,6 +18,10 @@
 - ports list plus large, MIDI IN/OUT plus serré (50/50)
 - largeur de ports list s'adapte au nom des ports ? on refresh ?
 - scroll bar
+
+## SECONDAIRE
+
+- File/Reset
 
 ## PETITES REFACTO
 
@@ -59,6 +63,8 @@
 - montrer les rules actives
 
 ## PLUS TARD (TABS FEATURES)
+
+- traduction FR
 
 - tab name : actuellement 2 tabs ne DOIVENT pas avoir le même nom (quoique ça
 a l'air de marcher quand même) et \_open_tab du menu donne le même nom à tous
