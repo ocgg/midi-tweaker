@@ -18,6 +18,7 @@
 - ports list plus large, MIDI IN/OUT plus serré (50/50)
 - largeur de ports list s'adapte au nom des ports ? on refresh ?
 - scroll bar
+- Ne pas afficher control/note, juste CC 10 ou NOTEON 23
 
 ## SECONDAIRE
 
