@@ -1,4 +1,10 @@
 import tkinter.ttk as ttk
+from src.modules.constants import (
+    MIDO_ATTR_TO_LABEL,
+    MIDO_BYTE1_NAMES,
+    MIDO_BYTE2_NAMES,
+    RULES_LIST_ALL,
+)
 
 
 class RulesListView(ttk.Frame):
@@ -7,13 +13,13 @@ class RulesListView(ttk.Frame):
 
         self.rules_controls = []
 
-        # Rules container
+        # Rules container #############
         self.rules_frame = ttk.Frame(self)
 
-        # Add Rule button
+        # Add Rule button #############
         self.add_rule_btn = ttk.Button(self, text='Add Rule',
                                                   style='big.TButton')
-        # Note for user
+        # Note for user ###############
         note_txt = ('Note: rules apply one by one in order. One rule is '
                     'skipped if it cannot apply to the message being routed '
                     'AND to the original MIDI IN message.')
@@ -21,15 +27,13 @@ class RulesListView(ttk.Frame):
                                     justify='center',
                                     style='small.TLabel')
 
-        # LAYOUT ######################
+        # LAYOUT ##########################################
 
-        # Rules container
+        # Rules container #############
         self.rules_frame.columnconfigure(0, weight=1, uniform='rule')
-        # self.rules_frame.columnconfigure(1, weight=0)
         self.rules_frame.columnconfigure(2, weight=1, uniform='rule')
-        # self.rules_frame.columnconfigure(3, weight=0)
 
-        # Self
+        # Self ########################
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
@@ -77,9 +81,9 @@ class RulesListView(ttk.Frame):
         out_elts = self._create_rule_elements(out_container, rule.out_attrs)
 
         for i, widget in enumerate(in_elts):
-            widget.pack(side='left', padx=(0, 10))
+            widget.grid(row=0, column=i, padx=(0, 10))
         for i, widget in enumerate(out_elts):
-            widget.pack(side='left', padx=(10, 0))
+            widget.grid(row=0, column=i, padx=(10, 0))
 
         return {'in_rule': in_container,
                 'separator': separator,
@@ -87,45 +91,54 @@ class RulesListView(ttk.Frame):
 
     def _create_rule_elements(self, frame, attrs):
         if not attrs:
-            label = ttk.Label(frame, text='ALL', style='bold.TLabel')
+            label = ttk.Label(frame, text=RULES_LIST_ALL, style='bold.TLabel')
             return [label]
 
-        MIDI_NBRS = ['note', 'control', 'pitch']
-        MIDI_VALUES = ['velocity', 'value']
+        has_channel = False
+        has_type = False
+        has_byte1 = False
+        has_byte2 = False
+
+        for attr in attrs:
+            match attr:
+                case 'channel':
+                    has_channel = True
+                case 'type':
+                    has_type = True
+                    type_name = attrs['type']
+                case name if name in MIDO_BYTE1_NAMES:
+                    has_byte1 = True
+                    byte1_name = name
+                case name if name in MIDO_BYTE2_NAMES:
+                    has_byte2 = True
+                    byte2_name = name
 
         labels_containers = []
-        keys = attrs.keys()
-        items = attrs.items()
-        has_type = 'type' in keys
-        has_val1 = any([k in MIDI_NBRS for k in keys])
-        has_val2 = any([k in MIDI_VALUES for k in keys])
 
         # Channel
-        if 'channel' in keys:
+        if has_channel:
             value = attrs['channel']
             container = self._create_attribute_container(frame, 'CH', value)
             labels_containers.append(container)
         # Type & val 1
-        if has_type and not has_val1:
-            name = self._change_attr_name(attrs['type'])
+        if has_type and not has_byte1:
+            name = MIDO_ATTR_TO_LABEL[type_name]
             container = self._create_attribute_container(frame, name)
             labels_containers.append(container)
-        elif has_type and has_val1:
-            name = self._change_attr_name(attrs['type'])
-            value = next((v for k, v in items if k in MIDI_NBRS))
+        elif has_type and has_byte1:
+            name = MIDO_ATTR_TO_LABEL[type_name]
+            value = attrs[byte1_name]
             container = self._create_attribute_container(frame, name, value)
             labels_containers.append(container)
-        elif not has_type and has_val1:
-            attr = next((k for k in keys if k in MIDI_NBRS))
-            name = self._change_attr_name(attr)
-            value = next((v for k, v in items if k in MIDI_NBRS))
+        elif not has_type and has_byte1:
+            name = MIDO_ATTR_TO_LABEL[byte1_name]
+            value = attrs[byte1_name]
             container = self._create_attribute_container(frame, name, value)
             labels_containers.append(container)
         # Val 2
-        if has_val2:
-            attr = next((k for k in keys if k in MIDI_VALUES))
-            name = self._change_attr_name(attr)
-            value = next((v for k, v in items if k in MIDI_VALUES))
+        if has_byte2:
+            name = MIDO_ATTR_TO_LABEL[byte2_name]
+            value = attrs[byte2_name]
             container = self._create_attribute_container(frame, name, value)
             labels_containers.append(container)
 
@@ -134,36 +147,9 @@ class RulesListView(ttk.Frame):
     def _create_attribute_container(self, frame, name, value=None):
         container = ttk.Frame(frame)
         wl = ttk.Label(container, text=name, style='bold.TLabel')
-        wl.pack(side='left')
+        wl.grid(row=0, column=0)
         if isinstance(value, range):
             value = f'{value.start}-{value.stop}'
         wv = ttk.Label(container, text=value, style='bold.gray.TLabel')
-        wv.pack(side='left')
+        wv.grid(row=0, column=1)
         return container
-
-    def _change_attr_name(self, attr_name):
-        match attr_name:
-            # Types
-            case 'note_on':
-                return 'NOTEON'
-            case 'note_off':
-                return 'NOTEOFF'
-            case 'control_change':
-                return 'CC'
-            case 'pitchwheel':
-                return 'PITCH'
-            # Val 1
-            case 'note':
-                return 'NOTE'
-            case 'control':
-                return 'CC'
-            case 'pitch':
-                return 'pitch'
-            # Val 2
-            case 'velocity':
-                return 'velo'
-            case 'value':
-                return 'val'
-            # Not handled yet case
-            case _:
-                return attr_name.upper()
