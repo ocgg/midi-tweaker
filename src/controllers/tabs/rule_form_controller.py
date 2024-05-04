@@ -1,5 +1,5 @@
 from src.models.rule import Rule
-from src.modules.constants import FORM_ATTR_RANGE
+from src.modules.constants import FORM_ATTR_RANGE, MIDO_BYTE2_NAMES
 
 
 class RuleFormController:
@@ -58,17 +58,17 @@ class RuleFormController:
 
         # validate form data
         validation = self._validate_form_data(in_form_data, out_form_data)
-        is_valid = validation[0]
-        in_form_data = validation[1]
-        out_form_data = validation[2]
+        # is_valid = validation[0]
+        # in_form_data = validation[1]
+        # out_form_data = validation[2]
 
-        if is_valid:
+        if validation['is_ok']:
             rule = Rule(in_form_data, out_form_data)
             self.router.add_rule(rule)
             self.view.clear_forms()
             self.tab_controller.update_rules_list()
             self.tab_controller.show_rules_list()
-        elif not out_form_data:
+        elif validation['error_source'] == 'global':
             self.out_form.display_global_error()
         else:
             self.in_form.display_field_errors(in_form_data)
@@ -87,24 +87,36 @@ class RuleFormController:
         # CHECKPOINT #################
         is_valid = all(in_form_data.values()) and all(out_form_data.values())
         if not is_valid:
-            return (is_valid, in_form_data, out_form_data)
+            return {'is_ok': False, 'error_source': 'field'}
 
-        # BOTH FORMS VALIDATIONS ####
+        # GLOBAL VALIDATIONS ##########
+        # Validations between both forms
+
         # VALIDATES: rule should change original input
-        # TODO: VALIDATES: if out is range, in should be range
-        # Remove values that are equal in both forms
-        key_to_remove = []
-        for key, value in in_form_data.items():
-            if out_form_data.get(key) and value == out_form_data[key]:
-                key_to_remove.append(key)
-        for key in key_to_remove:
-            del in_form_data[key]
-            del out_form_data[key]
+        in_form_set = set(in_form_data.keys())
+        out_form_set = set(out_form_data.keys())
+        sets_intersection = in_form_set.intersection(out_form_set)
+        intersection = {key: in_form_data[key] for key in sets_intersection}
+        out_dont_change = intersection == out_form_data
+        if out_dont_change:
+            return {'is_ok': False, 'error_source': 'global'}
 
-        if not out_form_data:
-            is_valid = False
+        # VALIDATION OK FROM HERE #####
 
-        return (is_valid, in_form_data, out_form_data)
+        # Remove type key if same
+        in_type = in_form_data.get('type')
+        out_type = out_form_data.get('type')
+        same_type = in_type == out_type and out_type is not None
+        if same_type:
+            del in_form_data['type']
+            del out_form_data['type']
+
+        for key, value in out_form_data.items():
+            # if out is range and in empty, in should be whole range
+            if isinstance(value, range) and not in_form_data.get(key):
+                in_form_data[key] = FORM_ATTR_RANGE[key]
+
+        return {'is_ok': True}
 
     def _process_form_data(self, form_data):
         # Convert to [int] or to range
