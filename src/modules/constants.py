@@ -82,7 +82,10 @@ MIDO_ATTR_TO_LABEL = {
     'value': 'val',
 }
 
+RULES_LIST_ALL = 'ALL'
+
 # MIDI PORTS INPUT VALUES #############
+# MIDI bar port selection
 
 PORT_CHOICE_NONE = 'None'
 PORT_CHOICE_ALL = 'All'
