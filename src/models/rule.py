@@ -39,7 +39,7 @@ class Rule:
 
     def apply_to(self, msg):
         # Filter according to in_attrs inputs
-        for key in self.in_attrs.keys():
+        for key in self.in_attrs:
             if hasattr(msg, key) and getattr(msg, key) in self.in_attrs[key]:
                 continue
             else:
