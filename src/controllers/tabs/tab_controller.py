@@ -1,6 +1,10 @@
 from .rules_list_controller import RulesListController
 from .rule_form_controller import RuleFormController
-from src.modules.constants import PORT_CHOICE_NONE, PORT_CHOICE_ALL
+from src.modules.constants import (
+    PORT_CHOICE_NONE,
+    PORT_CHOICE_ALL,
+    PORT_CHOICE_NEW,
+)
 
 
 class TabController:
@@ -50,6 +54,10 @@ class TabController:
         refresh_btn = self.view.midi_bars[source]['ports']['refresh']
         refresh_btn.config(command=lambda: self._on_ports_refresh(source))
 
+    def _bind_create_port_btn(self):
+        self.view.create_port_btn.config(
+            command=self._on_create_virtual_out_port)
+
     # CALLBACKS ###############################################################
 
     # MIDI bar ports ######################################
@@ -59,9 +67,25 @@ class TabController:
             self.router.set_input_ports_all()
         elif port_name == PORT_CHOICE_NONE:
             self.router.close_midi_ports(source)
+        elif port_name == PORT_CHOICE_NEW:
+            # Open dialog to create new port and ask a port name (view)
+            self.view.ask_new_port_name()
+            self._bind_create_port_btn()
         else:
             self.router.set_midi_port(source, port_name)
 
     def _on_ports_refresh(self, source):
         midi_ports = self.router.get_midi_ports(source)
         self.view.update_midi_ports(source, midi_ports)
+
+    def _on_create_virtual_out_port(self):
+        # get new out port name (view)
+        name = self.view.new_port_entry.get()
+        # create virtual out port with name (router)
+        self.router.create_virtual_out(name)
+        self.view.update_midi_ports('out', self.router.get_midi_ports('out'))
+        # select the new port in the combobox (view)
+        combobox = self.view.midi_bars['out']['ports']['combobox']
+        combobox.set(name)
+        # close the dialog (view)
+        self.view.new_port_toplevel.destroy()

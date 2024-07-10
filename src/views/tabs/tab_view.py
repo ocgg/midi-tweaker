@@ -1,3 +1,4 @@
+import tkinter as tk
 import tkinter.ttk as ttk
 from .rules_list_view import RulesListView
 from .rule_form_view import RuleFormView
@@ -5,6 +6,7 @@ from src.modules.constants import (
     PORT_CHOICE_NONE,
     PORT_CHOICE_ALL,
     PORT_CHOICE_PLACEHOLDER,
+    PORT_CHOICE_NEW,
 )
 
 
@@ -73,7 +75,39 @@ class TabView(ttk.Frame):
         if source == 'in':
             combobox['values'] += (PORT_CHOICE_ALL,)
         combobox['values'] += tuple(ports)
+        if source == 'out':
+            combobox['values'] += (PORT_CHOICE_NEW,)
         combobox.set(PORT_CHOICE_PLACEHOLDER)
+
+    def ask_new_port_name(self):
+        self.new_port_toplevel = tk.Toplevel(self)
+        self.new_port_toplevel.title('New Virtual Out MIDI Port')
+        self.new_port_toplevel.resizable(False, False)
+        # Keep the Toplevel on top of the main window
+        self.new_port_toplevel.transient(self.main_frame)
+        # Deactivate the main window while Toplevel is open
+        self.new_port_toplevel.grab_set()
+
+        toplevel_width = self.new_port_toplevel.winfo_reqwidth()
+        toplevel_height = self.new_port_toplevel.winfo_reqheight()
+        root_width = self.winfo_width()
+        root_height = self.winfo_height()
+
+        x = int(root_width / 2)
+        y = int(root_height / 2)
+        middle = f"{toplevel_width}x{toplevel_height}+{x}+{y}"
+
+        self.new_port_toplevel.geometry(middle)
+
+        text = 'Enter the new port name:'
+        label = ttk.Label(self.new_port_toplevel, text=text)
+        self.new_port_entry = ttk.Entry(self.new_port_toplevel)
+        self.create_port_btn = ttk.Button(self.new_port_toplevel, text='Create',
+                                          style='TButton')
+
+        label.grid(row=0, column=0, columnspan=2, sticky='ew', pady=5)
+        self.new_port_entry.grid(row=1, column=0, columnspan=2, sticky='ew', padx=5)
+        self.create_port_btn.grid(row=2, column=0, columnspan=2, pady=5)
 
     # PRIVATE #################################################################
 

@@ -89,4 +89,5 @@ RULES_LIST_ALL = 'ALL'
 
 PORT_CHOICE_NONE = 'None'
 PORT_CHOICE_ALL = 'All'
+PORT_CHOICE_NEW = ' ➕ Create New Port...'
 PORT_CHOICE_PLACEHOLDER = 'Select a MIDI port'
