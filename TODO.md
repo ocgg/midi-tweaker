@@ -2,11 +2,15 @@
 
 ## PRIORITE
 
+- bug si on choisit un port in & out et qu'on choisit "none" ensuite
+
 - A TESTER: port choice ALL
 
 - créer un port out virtuel
-
-- RANGES: si range out et rien en in, range_in = rangetstar-rangestop
+    - Ne pas lister les ports virtuels dans port_choice IN
+      (ou alors mettre un popup d'avertissement)
+    - Exclure le port out actif de 'ALL' pour éviter feedback
+    - lister les ports out virtuels créés
 
 - REECRIRE Rules list plus performant
 

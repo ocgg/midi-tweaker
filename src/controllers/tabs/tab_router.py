@@ -87,6 +87,13 @@ class TabRouter:
         except IOError:
             messagebox.showerror("Error", f"MIDI port not found: {port_name}")
 
+    def create_virtual_out(self, name):
+        try:
+            self.midi_out = mido.open_output(name, virtual=True)
+            print(self.midi_out)
+        except IOError:
+            messagebox.showerror("Error", "Could not create output port")
+
     # MIDI LEARN ##############################################################
 
     def learn(self, source):
